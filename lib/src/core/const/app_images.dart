@@ -1,0 +1,19 @@
+const String appLogo = 'assets/images/applogo.svg';
+const String onboardingOrderImage = 'assets/images/onboarding1.svg';
+const String onboardingMenuImage = 'assets/images/onboardin2.svg';
+const String onboardingGrowthImage = 'assets/images/onboarding3.svg';
+const String loginLogo = 'assets/images/loginscreen_logo.svg';
+const String boxIcon = 'assets/images/box.svg';
+const String homeIcon = 'assets/images/home.svg';
+const String profileIcon = 'assets/images/profile-circle.svg';
+const String uploadIcon = 'assets/images/upload.svg';
+const String addImageIcon = 'assets/images/Property 36.svg';
+const String verificationSuccessImage =
+    'assets/images/Success Illustration.svg';
+const String pen = 'assets/images/boxicons_edit.svg';
+const String profile = 'assets/images/Ellipse 174.svg';
+const String camera = 'assets/images/camera.svg';
+const String header = 'assets/images/image 516.svg';
+const String homeBanner = 'assets/images/banner.svg';
+const String sideMenuIcon = 'assets/images/sidemenu.svg';
+const String notificationIcon = 'assets/images/notificatio_icon.svg';

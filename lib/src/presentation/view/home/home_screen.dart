@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:restaurant_app/src/core/const/app_color.dart';
+import 'package:restaurant_app/src/core/const/app_images.dart';
+import 'package:restaurant_app/src/presentation/controller/home_controller.dart';
+import 'package:restaurant_app/src/presentation/view/home/widgets/dashboard_page.dart';
+import 'package:restaurant_app/src/presentation/view/home/widgets/section_page.dart';
+import 'package:restaurant_app/src/presentation/widgets/app_bottom_navigation_bar.dart';
+
+class HomeScreen extends GetView<HomeController> {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: PageView(
+          controller: controller.pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: const [
+            DashboardPage(),
+            SectionPage(title: 'Orders', icon: boxIcon),
+            SectionPage(title: 'Add Product', icon: addImageIcon),
+            SectionPage(title: 'Profile', icon: profileIcon),
+          ],
+        ),
+        bottomNavigationBar: Obx(
+          () => AppBottomNavigationBar(
+            currentIndex: controller.currentIndex.value,
+            onTap: controller.changeTab,
+          ),
+
+        ),
+      ),
+    );
+  }
+}

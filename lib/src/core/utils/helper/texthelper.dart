@@ -42,4 +42,44 @@ class TextHelper {
       color: AppColors.textprimary,
     );
   }
+
+  static TextStyle get protext {
+    return GoogleFonts.inter(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: AppColors.textprimary,
+    );
+  }
+
+  static TextStyle get prosubtext {
+    return GoogleFonts.inter(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: AppColors.textprimary,
+    );
+  }
+
+  static TextStyle get provalue {
+    return GoogleFonts.inter(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      color: AppColors.textprimary,
+    );
+  }
+
+  static TextStyle get provalue1 {
+    return GoogleFonts.inter(
+      fontSize: 15,
+      fontWeight: FontWeight.w600,
+      color: AppColors.textprimary,
+    );
+  }
+
+  static TextStyle get discount {
+    return GoogleFonts.inter(
+      fontSize: 10,
+      fontWeight: FontWeight.w700,
+      color: AppColors.green,
+    );
+  }
 }

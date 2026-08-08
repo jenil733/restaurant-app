@@ -1,33 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
 import 'package:restaurant_app/src/core/utils/helper/texthelper.dart';
+import 'package:restaurant_app/src/presentation/view/products/product_screen.dart';
+import 'package:restaurant_app/src/presentation/view/orders/order_screen.dart';
+import 'package:restaurant_app/src/presentation/controller/home_controller.dart';
 
 class OverviewCards extends StatelessWidget {
   const OverviewCards({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
         Expanded(
           child: _OverviewCard(
             title: 'Orders',
             value: '200',
             icon: boxIcon,
-            iconBackground: Color(0xFFFFF0E7),
+            iconBackground: const Color(0xFFFFF0E7),
             iconColor: AppColors.primary,
+            onViewTap: () {
+              if (Get.isRegistered<HomeController>()) {
+                Get.find<HomeController>().changeTab(1);
+              } else {
+                Get.to(() => OrdersScreen());
+              }
+            },
           ),
         ),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Expanded(
           child: _OverviewCard(
             title: 'Product',
             value: '200',
             icon: addImageIcon,
-            iconBackground: Color(0xFFE8FBEF),
+            iconBackground: const Color(0xFFE8FBEF),
             iconColor: AppColors.green,
+            onViewTap: () {
+              Get.to(() => const ProductListScreen());
+            },
           ),
         ),
       ],
@@ -42,6 +56,7 @@ class _OverviewCard extends StatelessWidget {
     required this.icon,
     required this.iconBackground,
     required this.iconColor,
+    required this.onViewTap,
   });
 
   final String title;
@@ -49,6 +64,7 @@ class _OverviewCard extends StatelessWidget {
   final String icon;
   final Color iconBackground;
   final Color iconColor;
+  final VoidCallback onViewTap;
 
   @override
   Widget build(BuildContext context) {
@@ -112,15 +128,18 @@ class _OverviewCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  const Text(
-                    'View',
-                    style: TextStyle(
-                      color: AppColors.button2,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
+                  GestureDetector(
+  onTap: onViewTap,
+  child: const Text(
+    'View',
+    style: TextStyle(
+      color: AppColors.button2,
+      fontSize: 10,
+      fontWeight: FontWeight.w700,
+      decoration: TextDecoration.underline,
+    ),
+  ),
+),
                 ],
               ),
             ],

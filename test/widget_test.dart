@@ -242,7 +242,7 @@ void main() {
     });
 
     Get.put(HomeController());
-    await tester.pumpWidget(const GetMaterialApp(home: HomeScreen()));
+    await tester.pumpWidget(GetMaterialApp(home: HomeScreen()));
     await tester.pumpAndSettle();
 
     expect(find.text('Recent Orders'), findsOneWidget);

@@ -1,12 +1,19 @@
-const String appLogo = 'assets/images/applogo.svg';
+const String appLogo = 'assets/images/applogo.png';
+const String logo2 = 'assets/images/logo2.png';
 const String onboardingOrderImage = 'assets/images/onboarding1.svg';
 const String onboardingMenuImage = 'assets/images/onboardin2.svg';
 const String onboardingGrowthImage = 'assets/images/onboarding3.svg';
 const String loginLogo = 'assets/images/loginscreen_logo.svg';
 const String boxIcon = 'assets/images/box.svg';
+const String salesIcon = 'assets/images/sales.svg';
+const String customerIcon = 'assets/images/profile-2user.svg';
+const String customerReviewIcon = 'assets/images/customer_review.svg';
 const String homeIcon = 'assets/images/home.svg';
 const String profileIcon = 'assets/images/profile-circle.svg';
+const String userProfile = 'assets/images/profile.png';
 const String uploadIcon = 'assets/images/upload.svg';
+const String businessInfo = 'assets/images/business_info.svg';
+const String restaurantId = 'assets/images/restaurant_id.svg';
 const String addImageIcon = 'assets/images/Property 36.svg';
 const String verificationSuccessImage =
     'assets/images/Success Illustration.svg';
@@ -17,3 +24,5 @@ const String header = 'assets/images/image 516.svg';
 const String homeBanner = 'assets/images/banner.svg';
 const String sideMenuIcon = 'assets/images/sidemenu.svg';
 const String notificationIcon = 'assets/images/notificatio_icon.svg';
+const String product = 'assets/images/product.png';
+// const String notificationIcon = 'assets/images/notificatio_icon.svg';

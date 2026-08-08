@@ -4,6 +4,8 @@ import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
 import 'package:restaurant_app/src/presentation/view/home/widgets/promotion_carousel.dart';
 import 'package:restaurant_app/src/presentation/widgets/app_embedded_image.dart';
+import 'package:get/get.dart';
+import 'package:restaurant_app/src/presentation/controller/home_controller.dart';
 
 class HomeHeaderSection extends StatelessWidget {
   const HomeHeaderSection({required this.statusBarHeight, super.key});
@@ -50,7 +52,14 @@ class _HeaderControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const _HeaderIcon(asset: sideMenuIcon),
+        GestureDetector(
+          onTap: () {
+            Get.find<HomeController>().openDrawer();
+          },
+          child: const _HeaderIcon(
+            asset: sideMenuIcon,
+          ),
+        ),
         const SizedBox(width: 8),
         DecoratedBox(
           decoration: BoxDecoration(

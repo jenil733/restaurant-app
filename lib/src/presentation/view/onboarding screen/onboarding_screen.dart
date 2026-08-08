@@ -76,7 +76,7 @@ class _SkipButton extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
-        padding: const EdgeInsets.only(top: 12, right: 24),
+        padding: const EdgeInsets.only(top: 25, right: 24),
         child: Material(
           color: AppColors.textprimary,
           borderRadius: BorderRadius.circular(14),
@@ -195,7 +195,7 @@ class _NavigationButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => Padding(
-        padding: const EdgeInsets.fromLTRB(32, 8, 24, 22),
+        padding: const EdgeInsets.fromLTRB(32, 8, 24, 35),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

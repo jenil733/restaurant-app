@@ -59,6 +59,7 @@ class SignInScreen extends GetView<SignInController> {
                 style: TextHelper.button,
                 onPressed: controller.nextStep,
               ),
+              const SizedBox(height: 12),
             ],
           ),
         ),

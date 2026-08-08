@@ -10,4 +10,6 @@ class AppColors {
   static const Color button2 = Color(0xFF0088FF);
   static const Color sidemenu = Color(0xFF22348D);
   static const Color textprimary = Color(0xFF1F2937);
+  static const Color border = Color(0xCC426B4D);
+  static const Color textBackground = Color.fromARGB(255, 199, 186, 195);
 }

@@ -17,11 +17,10 @@ class SplashScreen extends GetView<SplashController> {
           opacity: controller.fadeAnimation,
           child: ScaleTransition(
             scale: controller.scaleAnimation,
-            child: SvgPicture.asset(
+            child: Image.asset(
               appLogo,
               width: MediaQuery.sizeOf(context).width * 0.58,
               fit: BoxFit.contain,
-              semanticsLabel: 'Kayal Food Delivery',
             ),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
@@ -34,7 +35,9 @@ class VerificationSuccessController extends GetxController
     ).animate(curvedAnimation);
 
     animationController.forward();
-    _homeTimer = Timer(const Duration(seconds: 1), () {
+    _homeTimer = Timer(const Duration(seconds: 1), () async {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
       Get.offAllNamed<void>(AppRoutes.home);
     });
   }

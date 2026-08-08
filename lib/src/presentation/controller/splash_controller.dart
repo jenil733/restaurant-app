@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
@@ -37,8 +38,14 @@ class SplashController extends GetxController
   @override
   void onReady() {
     super.onReady();
-    _navigationTimer = Timer(const Duration(seconds: 2), () {
-      Get.offNamed<void>(AppRoutes.onboarding);
+    _navigationTimer = Timer(const Duration(seconds: 2), () async {
+      final prefs = await SharedPreferences.getInstance();
+      final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+      if (isLoggedIn) {
+        Get.offAllNamed<void>(AppRoutes.home);
+      } else {
+        Get.offNamed<void>(AppRoutes.onboarding);
+      }
     });
   }
 

@@ -4,6 +4,11 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   final currentIndex = 0.obs;
   final pageController = PageController();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void openDrawer() {
+    scaffoldKey.currentState?.openDrawer();
+  }
 
   Future<void> changeTab(int index) async {
     if (index < 0 || index > 3 || index == currentIndex.value) {

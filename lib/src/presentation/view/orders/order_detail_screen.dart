@@ -24,62 +24,70 @@ class OrderDetailScreen extends StatelessWidget {
         title: "Order Details",
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            OrderInfoCard(),
+      body: Obx(
+        () => SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              OrderInfoCard(),
 
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            CustomerDetailCard(),
+              CustomerDetailCard(),
 
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            OrderedItemsCard(),
+              OrderedItemsCard(),
 
-            const SizedBox(height: 16),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF22C55E),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+              if (controller.orderStatus.value == "Pending") ...[
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF22C55E),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: const Text(
+                      "Food Ready",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
-                child: const Text(
-                  "Food Ready",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
+              ],
 
-            const SizedBox(height: 25),
-          ],
+              const SizedBox(height: 25),
+            ],
+          ),
         ),
       ),
 
       bottomNavigationBar: SafeArea(
-  child: Container(
-    color: Colors.white,
-    padding: const EdgeInsets.all(16),
-    child: ((Get.arguments != null && Get.arguments["status"] == "Pending") || Get.arguments == null)
-        ? Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 58,
-                  child: OutlinedButton(
-                    onPressed: () {
+        child: Container(
+          color: Colors.white,
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 12,
+            bottom: 28,
+          ),
+          child: ((Get.arguments != null && Get.arguments["status"] == "Pending") || Get.arguments == null)
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 54,
+                        child: OutlinedButton(
+                          onPressed: () {
                       RejectOrderDialog.show(
                         onSubmit: (reason) {
                           controller.rejectOrder(reason);
@@ -161,7 +169,7 @@ class OrderDetailScreen extends StatelessWidget {
             ],
           )
         : SizedBox(
-            height: 58,
+            height: 54,
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
@@ -197,7 +205,9 @@ class OrderDetailScreen extends StatelessWidget {
               ),
             ),
           ),
+          
   ),
+  
 ),
       );
     

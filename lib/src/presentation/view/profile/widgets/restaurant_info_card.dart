@@ -103,7 +103,7 @@ Widget infoRow(
                     ? Icon(
                         icon,
                         color: iconColor,
-                        size: 20,
+                        size: 24,
                       )
                     : icon as Widget,
               ),
@@ -119,7 +119,7 @@ Widget infoRow(
                     title,
                     style: const TextStyle(
                       color: Colors.grey,
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(height: 2),

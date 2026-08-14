@@ -63,7 +63,8 @@ class OrderDetailController extends GetxController {
         deliveryDate.value = order["date"] ?? "";
       }
 
-      if (orderStatus.value == "Cancel") {
+      if (orderStatus.value == "Cancelled" ||
+          orderStatus.value == "Cancel") {
         cancelReason.value =
             order["reason"] ?? "Customer requested cancellation";
       }

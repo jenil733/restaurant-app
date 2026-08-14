@@ -135,6 +135,18 @@ ClipRRect(
                           width: 42,
                           height: 42,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 42,
+                              height: 42,
+                              color: Colors.grey[200],
+                              child: const Icon(
+                                Icons.image_not_supported,
+                                size: 20,
+                                color: Colors.grey,
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(width: 10),

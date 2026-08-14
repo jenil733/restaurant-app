@@ -10,7 +10,7 @@ class OrderController extends GetxController {
   final List<String> tabs = ["New", "Completed", "Cancel"];
   
   /// Status value each tab maps to
-  final List<String> _tabStatuses = ["Pending", "Completed", "Cancel"];
+  final List<String> _tabStatuses = ["Pending", "Completed", "Cancelled"];
   
 
   
@@ -27,11 +27,11 @@ class OrderController extends GetxController {
     {"orderId": "#1004", "product": "Chicken Biriyani", "qty": "2", "status": "Completed", "date": "12/02/25"},
     {"orderId": "#1005", "product": "Chicken Biriyani", "qty": "2", "status": "Completed", "date": "12/02/25"},
     // Cancel
-    {"orderId": "#1001", "product": "Chicken Biriyani", "qty": "2", "status": "Cancel", "date": "12/02/25"},
-    {"orderId": "#1002", "product": "Chicken Biriyani", "qty": "1", "status": "Cancel", "date": "12/02/25"},
-    {"orderId": "#1003", "product": "Chicken Biriyani", "qty": "3", "status": "Cancel", "date": "12/02/25"},
-    {"orderId": "#1004", "product": "Chicken Biriyani", "qty": "2", "status": "Cancel", "date": "12/02/25"},
-    {"orderId": "#1005", "product": "Chicken Biriyani", "qty": "2", "status": "Cancel", "date": "12/02/25"},
+    {"orderId": "#1001", "product": "Chicken Biriyani", "qty": "2", "status": "Cancelled", "date": "12/02/25"},
+    {"orderId": "#1002", "product": "Chicken Biriyani", "qty": "1", "status": "Cancelled", "date": "12/02/25"},
+    {"orderId": "#1003", "product": "Chicken Biriyani", "qty": "3", "status": "Cancelled", "date": "12/02/25"},
+    {"orderId": "#1004", "product": "Chicken Biriyani", "qty": "2", "status": "Cancelled", "date": "12/02/25"},
+    {"orderId": "#1005", "product": "Chicken Biriyani", "qty": "2", "status": "Cancelled", "date": "12/02/25"},
   ].obs;
   
 

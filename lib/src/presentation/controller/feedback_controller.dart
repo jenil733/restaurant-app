@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:restaurant_app/src/core/const/app_images.dart';
 
 class FeedbackController extends GetxController {
   final TextEditingController searchController = TextEditingController();
@@ -21,15 +22,23 @@ class FeedbackController extends GetxController {
   RxList<Map<String, dynamic>> feedbackList = <Map<String, dynamic>>[
     {
       "name": "David Wilson",
-      "image": "assets/images/restaurant.jpg",
+      "image": homeStoreImg,
       "rating": 4,
       "time": "2 hrs ago",
       "review":
           "Excellent service. The booking process was smooth and simple."
     },
     {
+      "name": "David Wilson",
+      "image": homeStoreImg,
+      "rating": 5,
+      "time": "2 hrs ago",
+      "review":
+          "Excellent service. The booking process was smooth and simple."
+    },
+    {
       "name": "John Miller",
-      "image": "assets/images/restaurant.jpg",
+      "image": homeStoreImg,
       "rating": 5,
       "time": "5 hrs ago",
       "review":
@@ -37,7 +46,7 @@ class FeedbackController extends GetxController {
     },
     {
       "name": "William",
-      "image": "assets/images/restaurant.jpg",
+      "image": homeStoreImg,
       "rating": 3,
       "time": "Yesterday",
       "review":
@@ -45,7 +54,7 @@ class FeedbackController extends GetxController {
     },
     {
       "name": "Sophia",
-      "image": "assets/images/restaurant.jpg",
+      "image": homeStoreImg,
       "rating": 5,
       "time": "2 days ago",
       "review":

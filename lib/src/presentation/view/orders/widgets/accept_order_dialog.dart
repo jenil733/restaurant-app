@@ -23,7 +23,7 @@ class AcceptOrderDialog {
               const Text(
                 "Are you sure ?",
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -45,7 +45,7 @@ class AcceptOrderDialog {
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 10),
 
               const Text(
                 "Accept this Order?",

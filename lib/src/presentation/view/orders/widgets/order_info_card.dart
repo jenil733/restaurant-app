@@ -131,8 +131,9 @@ class OrderInfoCard extends StatelessWidget {
     ]
 
     /// Cancelled Order
-    else if (controller.orderStatus.value == "Cancel") ...[
-  const SizedBox(height: 6),
+    else if (controller.orderStatus.value == "Cancelled" ||
+        controller.orderStatus.value == "Cancel") ...[
+      const SizedBox(height: 6),
 
   InkWell(
      onTap: () {
@@ -144,7 +145,7 @@ class OrderInfoCard extends StatelessWidget {
       height: 24,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: const Color(0xff0D6EFD),
+        color: const Color.fromARGB(255, 58, 134, 248),
         borderRadius: BorderRadius.circular(4),
       ),
       child: const Row(

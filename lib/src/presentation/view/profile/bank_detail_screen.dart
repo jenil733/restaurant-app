@@ -105,65 +105,72 @@ class BankDetailsScreen extends StatelessWidget {
   }
 
   Widget buildField(
-  String title,
-  TextEditingController controller, {
-  bool required = false,
-}) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 18),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        TextField(
-          controller: controller,
-          
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-          ),
-          decoration: InputDecoration(
-            filled: true,
-
-            // Different background colors
-            fillColor: required
-                ? const Color(0xFFF2F2F7)
-                : Colors.white,
-
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 16,
+    String title,
+    TextEditingController controller, {
+    bool required = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text.rich(
+            TextSpan(
+              text: title,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+              children: [
+                if (required)
+                  const TextSpan(
+                    text: ' *',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+              ],
             ),
+          ),
 
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.textBackground,
+          const SizedBox(height: 8),
+
+          TextField(
+            controller: controller,
+            readOnly: required,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: required
+                  ? const Color(0xFFF2F2F7)
+                  : Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 16,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: AppColors.textBackground,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: AppColors.textBackground,
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
-
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.textBackground,
-              ),
-            ),
-
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 }

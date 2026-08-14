@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
 import 'package:restaurant_app/src/presentation/controller/profile_controller.dart';
 
@@ -51,14 +52,14 @@ Widget profileCard(ProfileController controller) {
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.pink,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(color: Colors.pink, width: 1),
                       ),
                       child: const Icon(
                         Icons.camera_alt,
-                        size: 12,
-                        color: Colors.white,
+                        size: 16,
+                        color: Colors.pink,
                       ),
                     ),
                   )

@@ -98,7 +98,7 @@ class SalesReportScreen extends StatelessWidget {
 
                   ReportCard(
                     title: "Avg Order",
-                    value: controller.averageOrder.value,
+                    value: controller.averageOrder.value.toString(),
                     icon: boxIcon,
                     color: Colors.teal,
                   ),

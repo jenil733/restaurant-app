@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
-  var restaurantName = "Kavul Restaurant".obs;
+  var restaurantName = "Kayall Restaurant".obs;
   var ownerName = "John Miller".obs;
   var mobile = "+91 9834572823".obs;
   var email = "kayal@gmail.com".obs;

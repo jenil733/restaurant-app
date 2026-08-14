@@ -82,6 +82,8 @@ class RecentOrdersTable extends StatelessWidget {
                             color: Colors.green,
                             decoration:
                                 TextDecoration.underline,
+                                decorationColor: Colors.green,
+                                fontSize: 15
                           ),
                         ),
                       ),

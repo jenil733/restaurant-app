@@ -22,7 +22,7 @@ class RejectOrderDialog {
               const Text(
                 "Are you sure ?",
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),

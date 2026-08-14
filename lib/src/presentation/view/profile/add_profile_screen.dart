@@ -8,7 +8,7 @@ class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
 
   final restaurantController =
-      TextEditingController(text: "Kaual Restaurant");
+      TextEditingController(text: "Kayal Restaurant");
   final ownerController =
       TextEditingController(text: "John Miller");
   final idController =
@@ -21,8 +21,14 @@ class ProfileScreen extends StatelessWidget {
       TextEditingController(text: "Chennai");
   final streetController =
       TextEditingController(text: "T Nagar");
+  final addressController =
+      TextEditingController(text: "T Nagar");
   final pinController =
       TextEditingController(text: "600 001");
+  final startTimeController =
+      TextEditingController(text: "10:00 AM");
+  final endTimeController =
+      TextEditingController(text: "10:00 PM");
 
   final RxString restaurantType = "Non-Veg".obs;
 
@@ -98,21 +104,6 @@ class ProfileScreen extends StatelessWidget {
               readOnly: true,
             ),
 
-            buildField(
-              "Email",
-              emailController,
-            ),
-
-            buildField(
-              "City",
-              cityController,
-            ),
-
-            buildField(
-              "Street",
-              streetController,
-            ),
-
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -160,20 +151,129 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 18),
 
             buildField(
+              "Email",
+              emailController,
+            ),
+
+            buildField(
+              "City",
+              cityController,
+            ),
+
+            buildField(
+              "Street",
+              streetController,
+            ),
+
+            
+
+            buildField(
+              "Address",
+              addressController,
+            ),
+
+            buildField(
               "Pincode",
               pinController,
             ),
 
-            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: buildTimeField(
+                    context,
+                    "Start Time",
+                    startTimeController,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: buildTimeField(
+                    context,
+                    "End Time",
+                    endTimeController,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 25),
 
             CustomButton(
-  text: "Update",
-  onTap: () {
-    // Update profile
-  },
-),
+              text: "Update",
+              onTap: () {
+                // Update profile
+              },
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildTimeField(
+    BuildContext context,
+    String title,
+    TextEditingController controller,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: controller,
+            readOnly: true,
+            onTap: () async {
+              final TimeOfDay? picked = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.now(),
+              );
+              if (picked != null) {
+                controller.text = picked.format(context);
+              }
+            },
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 16,
+              ),
+              suffixIcon: const Icon(
+                Icons.access_time,
+                color: Colors.grey,
+                size: 22,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: AppColors.textBackground,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: AppColors.textBackground,
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

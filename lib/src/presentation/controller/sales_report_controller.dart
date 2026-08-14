@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../view/orders/order_detail_screen.dart';
 
 class SalesReportController extends GetxController {
   var fromDate = "".obs;
@@ -7,7 +8,7 @@ class SalesReportController extends GetxController {
 
   RxString totalSales = "₹12,348.00".obs;
   RxInt totalOrders = 248.obs;
-  RxString averageOrder = "₹123.00".obs;
+  RxInt averageOrder = 10.obs;
   RxInt totalCustomers = 33.obs;
 
   RxList<Map<String, dynamic>> orders = <Map<String, dynamic>>[
@@ -23,14 +24,14 @@ class SalesReportController extends GetxController {
       "orderId": "#1002",
       "product": "Chicken Biriyani",
       "qty": 2,
-      "status": "Completed",
+      "status": "Pending",
     },
     {
       "sno": 3,
       "orderId": "#1003",
       "product": "Chicken Biriyani",
       "qty": 1,
-      "status": "Cancelled",
+      "status": "Pending",
     },
     {
       "sno": 4,
@@ -70,7 +71,11 @@ class SalesReportController extends GetxController {
   }
 
   void onView(int index) {
-    // Handle view order
+    final order = orders[index];
+    Get.to(
+      () => OrderDetailScreen(),
+      arguments: order,
+    );
   }
 
   Color statusColor(String status) {

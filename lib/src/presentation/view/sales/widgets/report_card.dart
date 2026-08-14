@@ -62,8 +62,8 @@ class ReportCard extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
 

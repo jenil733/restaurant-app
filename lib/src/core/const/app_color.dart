@@ -15,6 +15,5 @@ class AppColors {
   static const Color border = Color(0xCC426B4D);
   static const Color textBackground = Color.fromARGB(255, 199, 186, 195);
   static const Color subText = Color(0xFF1F2937);
-  static const Color addproductBorder = Color(0xE29FB357);
-  
+  static const Color addproductBorder = Color.fromRGBO(226, 159, 179, 0.34);
 }

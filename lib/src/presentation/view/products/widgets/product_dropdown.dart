@@ -64,6 +64,7 @@ class _ProductDropdownState extends State<ProductDropdown> {
           hint: Text(widget.hint),
           style: const TextStyle(
               color: Colors.grey,
+              fontSize:16
             ),
           icon: const Icon(Icons.keyboard_arrow_down),
           items: widget.items

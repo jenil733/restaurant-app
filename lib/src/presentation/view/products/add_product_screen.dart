@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
+import 'package:restaurant_app/src/core/utils/helper/texthelper.dart';
 import 'package:restaurant_app/src/presentation/controller/add_product_controller.dart';
 import 'package:restaurant_app/src/presentation/view/products/widgets/product_dropdown.dart';
 import 'package:restaurant_app/src/presentation/view/products/widgets/product_textfield.dart';
@@ -29,12 +30,10 @@ class AddProductScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-              const Text(
+              Text(
                 "Upload Image",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: AppColors.textprimary,
+                style: TextHelper.button.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
               ),
 

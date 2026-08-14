@@ -10,8 +10,8 @@ class OrderTheme {
   OrderTheme._();
 
   static const Color orange = Color(0xFFF37021);
-  static const Color headerPeach = Color(0xFFF7C99B);
-  static const Color rowPeach = Color(0xFFFCE7D4);
+  static const Color headerPeach = Color(0xFFFFF2E5);
+  static const Color rowPeach = Color(0xFFFFF9F3);
   static const Color background = Color(0xFFFBF3EA);
 }
 
@@ -178,30 +178,43 @@ class OrdersScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: OrderTheme.headerPeach,
-            borderRadius: BorderRadius.circular(8),
+            border: Border(
+              top: BorderSide(color: Color(0xFFF0E5D8)),
+              bottom: BorderSide(color: Color(0xFFF0E5D8)),
+            ),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
           child: Obx(() {
             final isNew = controller.selectedTab.value == 0;
             return Row(
               children: isNew
-                  ? const [
-                      Expanded(flex: 1, child: _HeaderCell("Sno")),
-                      Expanded(flex: 2, child: _HeaderCell("Order ID")),
-                      Expanded(flex: 2, child: _HeaderCell("Product")),
-                      Expanded(flex: 1, child: _HeaderCell("Qty")),
-                      Expanded(flex: 2, child: _HeaderCell("View")),
-                      Expanded(flex: 2, child: _HeaderCell("Status")),
+                  ? [
+                      const Expanded(flex: 1, child: _HeaderCell("Sno")),
+                      _verticalDivider(),
+                      const Expanded(flex: 2, child: _HeaderCell("Order ID")),
+                      _verticalDivider(),
+                      const Expanded(flex: 2, child: _HeaderCell("Product")),
+                      _verticalDivider(),
+                      const Expanded(flex: 1, child: _HeaderCell("Qty")),
+                      _verticalDivider(),
+                      const Expanded(flex: 2, child: _HeaderCell("View")),
+                      _verticalDivider(),
+                      const Expanded(flex: 2, child: _HeaderCell("Status")),
                     ]
-                  : const [
-                      Expanded(flex: 1, child: _HeaderCell("Sno")),
-                      Expanded(flex: 2, child: _HeaderCell("Date")),
-                      Expanded(flex: 2, child: _HeaderCell("Order ID")),
-                      Expanded(flex: 2, child: _HeaderCell("Product")),
-                      Expanded(flex: 1, child: _HeaderCell("Qty")),
-                      Expanded(flex: 2, child: _HeaderCell("View")),
+                  : [
+                      const Expanded(flex: 1, child: _HeaderCell("Sno")),
+                      _verticalDivider(),
+                      const Expanded(flex: 2, child: _HeaderCell("Date")),
+                      _verticalDivider(),
+                      const Expanded(flex: 2, child: _HeaderCell("Order ID")),
+                      _verticalDivider(),
+                      const Expanded(flex: 2, child: _HeaderCell("Product")),
+                      _verticalDivider(),
+                      const Expanded(flex: 1, child: _HeaderCell("Qty")),
+                      _verticalDivider(),
+                      const Expanded(flex: 2, child: _HeaderCell("View")),
                     ],
             );
           }),
@@ -217,65 +230,71 @@ class OrdersScreen extends StatelessWidget {
                 final isNew = controller.selectedTab.value == 0;
 
                 return Container(
-                  color: isEven ? OrderTheme.rowPeach : Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                  decoration: BoxDecoration(
+                    color:  Colors.white,
+                    border: const Border(bottom: BorderSide(color: Color(0xFFF0E5D8))),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 0),
                   child: Row(
                     children: isNew
                         ? [
-                            Expanded(flex: 1, child: Text("${order["sno"]}")),
-                            Expanded(flex: 2, child: Text(order["orderId"] ?? "")),
-                            Expanded(flex: 2, child: Text(order["product"] ?? "")),
-                            Expanded(flex: 1, child: Text("${order["qty"]}")),
+                            Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                            Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                            Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A), height: 1.2)))),
+                            Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
                             Expanded(
                               flex: 2,
-                              child: GestureDetector(
-                                onTap: () => controller.onView(index),
-                                child: const Text(
-                                  "View",
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.w600,
-                                    decoration: TextDecoration.underline,
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () => controller.onView(index),
+                                  child: const Text(
+                                    "View",
+                                    style: TextStyle(
+                                      color: Color(0xFF22C55E),
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Color(0xFF22C55E),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                             Expanded(
                               flex: 2,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
+                              child: Center(
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: OrderTheme.orange,
-                                    borderRadius: BorderRadius.circular(6),
+                                    borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
                                     order["status"] ?? "",
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 12),
+                                    style: const TextStyle(color: Colors.white, fontSize: 12),
                                   ),
                                 ),
                               ),
                             ),
                           ]
                         : [
-                            Expanded(flex: 1, child: Text("${order["sno"]}")),
-                            Expanded(flex: 2, child: Text(order["date"] ?? "")),
-                            Expanded(flex: 2, child: Text(order["orderId"] ?? "")),
-                            Expanded(flex: 2, child: Text(order["product"] ?? "")),
-                            Expanded(flex: 1, child: Text("${order["qty"]}")),
+                            Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                            Expanded(flex: 2, child: Center(child: Text(order["date"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                            Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                            Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A), height: 1.2)))),
+                            Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
                             Expanded(
                               flex: 2,
-                              child: GestureDetector(
-                                onTap: () => controller.onView(index),
-                                child: const Text(
-                                  "View",
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.w600,
-                                    decoration: TextDecoration.underline,
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () => controller.onView(index),
+                                  child: const Text(
+                                    "View",
+                                    style: TextStyle(
+                                      color: Color(0xFF22C55E),
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Color(0xFF22C55E),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -286,9 +305,17 @@ class OrdersScreen extends StatelessWidget {
               },
             ),
           ),
-
+          const SizedBox(height: 16),
           _buildPagination(),
       ],
+    );
+  }
+
+  Widget _verticalDivider() {
+    return Container(
+      width: 1,
+      height: 14,
+      color: Colors.grey.shade300,
     );
   }
 
@@ -351,17 +378,13 @@ class _HeaderCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 13,
-            color: Colors.black87,
-          ),
+    return Center(
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 13,
+          color: Color(0xFF4A4A4A),
         ),
       ),
     );

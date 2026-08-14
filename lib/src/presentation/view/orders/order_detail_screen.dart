@@ -38,6 +38,31 @@ class OrderDetailScreen extends StatelessWidget {
 
             OrderedItemsCard(),
 
+            const SizedBox(height: 16),
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF22C55E),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                child: const Text(
+                  "Food Ready",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+
             const SizedBox(height: 25),
           ],
         ),
@@ -47,7 +72,7 @@ class OrderDetailScreen extends StatelessWidget {
   child: Container(
     color: Colors.white,
     padding: const EdgeInsets.all(16),
-    child: (Get.arguments == "Pending" || Get.arguments == null)
+    child: ((Get.arguments != null && Get.arguments["status"] == "Pending") || Get.arguments == null)
         ? Row(
             children: [
               Expanded(

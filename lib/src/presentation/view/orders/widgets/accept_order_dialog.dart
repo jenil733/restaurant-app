@@ -28,14 +28,14 @@ class AcceptOrderDialog {
                 ),
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
 
               Divider(
                 color: Colors.grey.shade300,
                 thickness: 1,
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 8),
 
               const Text(
                 "You want to",
@@ -45,7 +45,7 @@ class AcceptOrderDialog {
                 ),
               ),
 
-              const SizedBox(height: 5),
+              const SizedBox(height: 40),
 
               const Text(
                 "Accept this Order?",
@@ -56,7 +56,7 @@ class AcceptOrderDialog {
                 ),
               ),
 
-              const SizedBox(height: 22),
+              const SizedBox(height: 18),
 
               Row(
                 children: [

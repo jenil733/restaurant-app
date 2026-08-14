@@ -77,7 +77,7 @@ ClipRRect(
           horizontal: 10,
         ),
         decoration: const BoxDecoration(
-          color: Color(0xffF8D9BE),
+          color: Color(0xffFFF5EC),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(8),
             topRight: Radius.circular(8),
@@ -171,9 +171,7 @@ ClipRRect(
       //================ Total =================
       Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(12),
         decoration: const BoxDecoration(
-          color: Color(0xffFFF8F4),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(8),
             bottomRight: Radius.circular(8),
@@ -181,27 +179,44 @@ ClipRRect(
         ),
         child: Column(
           children: [
-            _priceRow(
-              "Subtotal",
-              "₹${controller.subtotal.value.toStringAsFixed(0)}",
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  _priceRow(
+                    "Subtotal",
+                    "₹${controller.subtotal.value.toStringAsFixed(0)}",
+                  ),
+                  const SizedBox(height: 8),
+                  _priceRow(
+                    "Delivery Charge",
+                    "₹${controller.deliveryCharge.value.toStringAsFixed(0)}",
+                  ),
+                  const SizedBox(height: 8),
+                  _priceRow(
+                    "Discount",
+                    "-₹${controller.discount.value.toStringAsFixed(0)}",
+                    valueColor: Colors.green,
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 8),
-            _priceRow(
-              "Delivery Charge",
-              "₹${controller.deliveryCharge.value.toStringAsFixed(0)}",
-            ),
-            const SizedBox(height: 8),
-            _priceRow(
-              "Discount",
-              "-₹${controller.discount.value.toStringAsFixed(0)}",
-              valueColor: Colors.green,
-            ),
-            const Divider(height: 20),
-            _priceRow(
-              "Grand Total",
-              "₹${controller.grandTotal.toStringAsFixed(0)}",
-              isBold: true,
-              valueColor: const Color(0xffF37021),
+            const Divider(height: 1),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: Color(0xffFFF8F4),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+              ),
+              child: _priceRow(
+                "Grand Total",
+                "₹${controller.grandTotal.toStringAsFixed(0)}",
+                isBold: true,
+                valueColor: const Color(0xffF37021),
+              ),
             ),
           ],
         ),

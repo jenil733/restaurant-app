@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/presentation/controller/edit_product_controller.dart';
+import 'package:restaurant_app/src/core/const/app_images.dart';
 import 'package:restaurant_app/src/presentation/view/products/widgets/product_dropdown.dart';
 import 'package:restaurant_app/src/presentation/view/products/widgets/product_textfield.dart';
 import 'package:restaurant_app/src/presentation/view/products/widgets/upload_image_widget.dart';
-
 import 'package:restaurant_app/src/presentation/widgets/app_bar.dart';
 import 'package:restaurant_app/src/presentation/widgets/button.dart';
 
@@ -70,6 +70,23 @@ class EditProductScreen extends StatelessWidget {
               const SizedBox(height: 12),
 
               const UploadImageWidget(),
+
+              const SizedBox(height: 8),
+
+              GestureDetector(
+                onTap: () {
+                  showImageDialog(context);
+                },
+                child: const Text(
+                  "product_image1.png",
+                  style: TextStyle(
+                    color: AppColors.red,
+                    fontSize: 12,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.red,
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 24),
 
@@ -201,11 +218,11 @@ class EditProductScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
 
               const Divider(height: 1),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 16),
 
               const Text(
                 "You want to",
@@ -215,7 +232,7 @@ class EditProductScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
 
               const Text(
                 "Delete this Product?",
@@ -226,7 +243,7 @@ class EditProductScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
               Row(
                 children: [
@@ -295,4 +312,57 @@ class EditProductScreen extends StatelessWidget {
     },
   );
 }
+
+  void showImageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.all(8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    product,
+                    width: double.infinity,
+                    height: 300,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: -16,
+                right: -16,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.cancel,
+                      color: Colors.red,
+                      size: 32,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 } 

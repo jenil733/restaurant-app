@@ -56,7 +56,7 @@ class CustomerDetailCard extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
 
                   Text(
                     controller.customerName.value,
@@ -66,7 +66,7 @@ class CustomerDetailCard extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
 
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

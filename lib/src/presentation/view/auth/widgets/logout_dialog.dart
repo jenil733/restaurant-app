@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:restaurant_app/src/core/utils/navigation/app_routes.dart';
 void showLogoutDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -79,10 +81,11 @@ void showLogoutDialog(BuildContext context) {
                     child: SizedBox(
                       height: 40,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.pop(context);
-
-                          // Logout logic here
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.clear();
+                          Get.offAllNamed<void>(AppRoutes.login);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xffFF3941),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
+import 'package:restaurant_app/src/presentation/controller/home_controller.dart';
 import 'package:restaurant_app/src/presentation/controller/order_controller.dart';
 import 'package:restaurant_app/src/presentation/widgets/app_bar.dart';
 
@@ -23,7 +24,16 @@ class OrdersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const CustomAppBar(title: "Orders"),
+      appBar: CustomAppBar(
+        title: "Orders",
+        onBackPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else if (Get.isRegistered<HomeController>()) {
+            Get.find<HomeController>().changeTab(0);
+          }
+        },
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

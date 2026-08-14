@@ -172,20 +172,36 @@ class _RegisterStep extends StatelessWidget {
         AppFormField(
           label: 'Restaurant Name',
           controller: controller.restaurantNameController,
+          isRequired: true,
           validator: controller.requiredValidator,
         ),
         const SizedBox(height: 12),
         AppFormField(
           label: 'Owner Name',
           controller: controller.ownerNameController,
+          isRequired: true,
           validator: controller.requiredValidator,
         ),
         const SizedBox(height: 12),
         AppFormField(
           label: 'Phone No',
           controller: controller.phoneController,
+          isRequired: true,
           keyboardType: TextInputType.phone,
-          prefixText: '+91  ',
+          hintText: '0000 000 000',
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 12, right: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('+91', style: TextHelper.heading2.copyWith(fontSize: 12)),
+                const SizedBox(width: 4),
+                Icon(Icons.keyboard_arrow_down, size: 16, color: AppColors.textprimary.withValues(alpha: 0.5)),
+                const SizedBox(width: 8),
+                Container(width: 1, height: 16, color: AppColors.textprimary.withValues(alpha: 0.2)),
+              ],
+            ),
+          ),
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(10),
@@ -193,18 +209,21 @@ class _RegisterStep extends StatelessWidget {
           validator: controller.requiredValidator,
         ),
         const SizedBox(height: 12),
+         _RestaurantTypeField(controller: controller),
+        const SizedBox(height: 12),
         AppFormField(
           label: 'Email',
           controller: controller.emailController,
+          isRequired: true,
           keyboardType: TextInputType.emailAddress,
           validator: controller.requiredValidator,
         ),
         const SizedBox(height: 12),
         AppFormField(label: 'City', controller: controller.cityController),
         const SizedBox(height: 12),
-        AppFormField(label: 'State', controller: controller.stateController),
+        AppFormField(label: 'Street', controller: controller.streetController),
         const SizedBox(height: 12),
-        _RestaurantTypeField(controller: controller),
+        AppFormField(label: 'Address', controller: controller.addressController),
         const SizedBox(height: 12),
         AppFormField(
           label: 'Pincode',
@@ -213,6 +232,28 @@ class _RegisterStep extends StatelessWidget {
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(6),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: AppFormField(
+                label: 'Start Time',
+                controller: controller.startTimeController,
+                hintText: '--/--',
+                suffixIcon: Icon(Icons.access_time, color: AppColors.textprimary.withValues(alpha: 0.3)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: AppFormField(
+                label: 'End Time',
+                controller: controller.endTimeController,
+                hintText: '--/--',
+                suffixIcon: Icon(Icons.access_time, color: AppColors.textprimary.withValues(alpha: 0.3)),
+              ),
+            ),
           ],
         ),
       ],
@@ -230,7 +271,21 @@ class _RestaurantTypeField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Restaurant Type', style: TextHelper.heading2),
+        Text.rich(
+          TextSpan(
+            text: 'Restaurant Type',
+            style: TextHelper.heading2,
+            children: [
+              TextSpan(
+                text: ' *',
+                style: TextHelper.heading2.copyWith(
+                  color: AppColors.red,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+        ),
         const SizedBox(height: 6),
         Obx(
           () => DropdownButtonFormField<String>(

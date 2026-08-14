@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
+import 'package:restaurant_app/src/core/utils/helper/texthelper.dart';
 import 'package:restaurant_app/src/presentation/view/home/widgets/promotion_carousel.dart';
 import 'package:restaurant_app/src/presentation/widgets/app_embedded_image.dart';
 import 'package:get/get.dart';
@@ -69,19 +70,15 @@ class _HeaderControls extends StatelessWidget {
               BoxShadow(color: Color(0x17000000), blurRadius: 8),
             ],
           ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
             child: Row(
               children: [
-                CircleAvatar(radius: 8, backgroundColor: AppColors.green),
-                SizedBox(width: 6),
+                const CircleAvatar(radius: 8, backgroundColor: AppColors.green),
+                const SizedBox(width: 6),
                 Text(
                   'Online',
-                  style: TextStyle(
-                    color: AppColors.textprimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextHelper.provalue1
                 ),
               ],
             ),

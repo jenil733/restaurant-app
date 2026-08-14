@@ -38,7 +38,7 @@ class VerificationSuccessController extends GetxController
     _homeTimer = Timer(const Duration(seconds: 1), () async {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
-      Get.offAllNamed<void>(AppRoutes.home);
+      Get.offAllNamed<void>(AppRoutes.location);
     });
   }
 

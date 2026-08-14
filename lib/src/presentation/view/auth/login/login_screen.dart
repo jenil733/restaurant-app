@@ -23,15 +23,15 @@ class LoginScreen extends GetView<LoginController> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 28, 24, 12),
+                padding: const EdgeInsets.fromLTRB(24, 56, 24, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Login', style: TextHelper.heading3),
-                    const SizedBox(height: 26),
+                    const SizedBox(height: 32),
                     Center(
-                      child: SvgPicture.asset(
-                        loginLogo,
+                      child: Image.asset(
+                        appLogo,
                         width: 121,
                         height: 86,
                       ),

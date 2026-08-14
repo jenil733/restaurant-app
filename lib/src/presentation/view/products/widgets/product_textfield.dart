@@ -46,13 +46,13 @@ class ProductTextField extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: AppColors.border,
+                color: AppColors.addproductBorder,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: AppColors.border,
+                color: AppColors.addproductBorder,
               ),
             ),
           ),

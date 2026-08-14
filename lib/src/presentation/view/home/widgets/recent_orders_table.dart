@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
+import 'package:restaurant_app/src/core/utils/helper/texthelper.dart';
+import 'package:restaurant_app/src/presentation/view/orders/order_detail_screen.dart';
 
 class RecentOrdersTable extends StatelessWidget {
   const RecentOrdersTable({super.key});
@@ -86,16 +89,15 @@ class _OrderTableRow extends StatelessWidget {
         ),
         child: Text(
           'Pending',
-          style: GoogleFonts.poppins(
-            color: AppColors.white,
-            fontSize: 9.5,
-            fontWeight: FontWeight.w500,
-          ),
+          style:TextHelper.button.copyWith(
+            fontSize:11,
+            color:AppColors.white,
+          )
         ),
       );
     }
 
-    return Text(
+    Widget content = Text(
       value,
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
@@ -111,12 +113,23 @@ class _OrderTableRow extends StatelessWidget {
             : index == 4
             ? 11
             : 10,
-        fontWeight: FontWeight.w400,
-        height: 1.05,
+        fontWeight: FontWeight.w500,
+        height: 1.15,
         decoration: !isHeader && value == 'View'
             ? TextDecoration.underline
             : null,
       ),
     );
+
+    if (!isHeader && value == 'View') {
+      return GestureDetector(
+        onTap: () {
+          Get.to(() => OrderDetailScreen());
+        },
+        child: content,
+      );
+    }
+
+    return content;
   }
 }

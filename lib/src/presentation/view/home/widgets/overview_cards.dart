@@ -40,7 +40,11 @@ class OverviewCards extends StatelessWidget {
             iconBackground: const Color(0xFFE8FBEF),
             iconColor: AppColors.green,
             onViewTap: () {
-              Get.to(() => const ProductListScreen());
+              if (Get.isRegistered<HomeController>()) {
+                Get.find<HomeController>().changeTab(2);
+              } else {
+                Get.to(() => const ProductListScreen());
+              }
             },
           ),
         ),
@@ -95,7 +99,7 @@ class _OverviewCard extends StatelessWidget {
                       title,
                       style: TextHelper.heading2.copyWith(
                         color: AppColors.textprimary,
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -130,11 +134,11 @@ class _OverviewCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   GestureDetector(
   onTap: onViewTap,
-  child: const Text(
+  child: Text(
     'View',
-    style: TextStyle(
+    style: TextHelper.button.copyWith(
       color: AppColors.button2,
-      fontSize: 10,
+      fontSize: 15,
       fontWeight: FontWeight.w700,
       decoration: TextDecoration.underline,
     ),

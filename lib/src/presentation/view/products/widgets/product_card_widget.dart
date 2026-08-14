@@ -45,12 +45,11 @@ class ProductCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: Image.asset(
               product,
-              width: 126,
-              height: 104,
+              width: 150,
+              height: 120,
               fit: BoxFit.cover,
             ),
           ),
-
           const SizedBox(width: 12),
 
           Expanded(
@@ -99,7 +98,11 @@ class ProductCard extends StatelessWidget {
 
                   Row(
                     children: [
-                      Text("₹$originalPrice", style: TextHelper.provalue1),
+                      Text("₹$originalPrice", style: TextHelper.provalue1.copyWith(
+                        color:AppColors.textBackground,
+                        decoration: TextDecoration.lineThrough,
+                        decorationColor: AppColors.textBackground,
+                      )),
                       const SizedBox(width: 6),
                       Text("₹$discountedPrice", style: TextHelper.provalue),
                       const Spacer(),
@@ -127,7 +130,7 @@ class ProductCard extends StatelessWidget {
                   Text(
                     "Description",
                     style: TextHelper.discount.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w900,
                       color: AppColors.textprimary,
                     ),
                   ),
@@ -140,8 +143,8 @@ class ProductCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextHelper.discount.copyWith(
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.textprimary,
+                        fontWeight: FontWeight.w100,
+                        color: AppColors.subText,
                         height: 1.2,
                       ),
                     ),

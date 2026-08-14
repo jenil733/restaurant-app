@@ -9,6 +9,7 @@ import 'package:restaurant_app/src/presentation/view/home/widgets/section_page.d
 import 'package:restaurant_app/src/presentation/view/drawer.dart';
 import 'package:restaurant_app/src/presentation/view/orders/order_screen.dart';
 import 'package:restaurant_app/src/presentation/view/products/add_product_screen.dart';
+import 'package:restaurant_app/src/presentation/view/products/product_screen.dart';
 import 'package:restaurant_app/src/presentation/view/profile/profile_screen.dart';
 import 'package:restaurant_app/src/presentation/widgets/app_bottom_navigation_bar.dart';
 
@@ -19,17 +20,24 @@ class HomeScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: Scaffold(
-        key: controller.scaffoldKey,
-        drawer: const CustomDrawer(),
-        backgroundColor: AppColors.background,
+      child: Obx(
+        () => PopScope(
+          canPop: controller.currentIndex.value == 0,
+          onPopInvoked: (didPop) {
+            if (didPop) return;
+            controller.changeTab(0);
+          },
+          child: Scaffold(
+            key: controller.scaffoldKey,
+            drawer: const CustomDrawer(),
+            backgroundColor: AppColors.background,
         body: PageView(
           controller: controller.pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
             const DashboardPage(),
             OrdersScreen(),
-            const AddProductScreen(),
+            const ProductListScreen(),
   ProfileScreen(),
           ],
         ),
@@ -39,6 +47,8 @@ class HomeScreen extends GetView<HomeController> {
             onTap: controller.changeTab,
           ),
 
+        ),
+          ),
         ),
       ),
     );

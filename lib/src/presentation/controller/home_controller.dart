@@ -6,6 +6,11 @@ class HomeController extends GetxController {
   final pageController = PageController();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  // Verification state (to simulate the flow)
+  final isApproved = true.obs;
+  final isRejected = true.obs;
+  final rejectionReason = 'The Uploaded Document Is Incorrect.'.obs;
+
   void openDrawer() {
     scaffoldKey.currentState?.openDrawer();
   }

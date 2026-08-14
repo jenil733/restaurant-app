@@ -60,11 +60,12 @@ class OtpController extends GetxController {
     otpFocusNode.requestFocus();
   }
 
-  void editPhoneNumber() {
+  Future<void> editPhoneNumber() async {
+    await _dismissKeyboard();
     Get.offAllNamed<void>(AppRoutes.login);
   }
 
-  void verifyOtp() {
+  Future<void> verifyOtp() async {
     if (otpController.text.length != otpLength) {
       AppNotification.showError(
         title: 'Incomplete OTP',
@@ -73,6 +74,7 @@ class OtpController extends GetxController {
       return;
     }
 
+    await _dismissKeyboard();
     Get.offNamed<void>(AppRoutes.verificationSuccess);
   }
 
@@ -110,12 +112,27 @@ class OtpController extends GetxController {
     }
   }
 
+  Future<void> _dismissKeyboard() async {
+    final focus = FocusManager.instance.primaryFocus;
+    if (focus != null && focus.hasFocus) {
+      focus.unfocus();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
+  }
+
   @override
   void onClose() {
     _timer?.cancel();
     otpFocusNode.removeListener(_handleFocusChange);
-    otpController.dispose();
-    otpFocusNode.dispose();
+    
+    // Delay disposal to allow transition animation to complete safely
+    final controller = otpController;
+    final focusNode = otpFocusNode;
+    Future.delayed(const Duration(milliseconds: 500), () {
+      controller.dispose();
+      focusNode.dispose();
+    });
+    
     super.onClose();
   }
 }

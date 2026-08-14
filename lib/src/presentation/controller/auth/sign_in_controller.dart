@@ -22,8 +22,11 @@ class SignInController extends GetxController {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final cityController = TextEditingController();
-  final stateController = TextEditingController();
+  final streetController = TextEditingController();
+  final addressController = TextEditingController();
   final pincodeController = TextEditingController();
+  final startTimeController = TextEditingController();
+  final endTimeController = TextEditingController();
   final fssaiController = TextEditingController();
   final aadhaarController = TextEditingController();
   final panController = TextEditingController();
@@ -43,8 +46,11 @@ class SignInController extends GetxController {
     phoneController,
     emailController,
     cityController,
-    stateController,
+    streetController,
+    addressController,
     pincodeController,
+    startTimeController,
+    endTimeController,
     fssaiController,
     aadhaarController,
     panController,
@@ -181,10 +187,16 @@ class SignInController extends GetxController {
 
   @override
   void onClose() {
-    pageController.dispose();
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
+    final cachedPageController = pageController;
+    final cachedControllers = List<TextEditingController>.from(_controllers);
+    
+    Future.delayed(const Duration(milliseconds: 500), () {
+      cachedPageController.dispose();
+      for (final controller in cachedControllers) {
+        controller.dispose();
+      }
+    });
+    
     super.onClose();
   }
 }

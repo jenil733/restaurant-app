@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:restaurant_app/src/presentation/controller/add_product_controller.dart';
+import 'package:restaurant_app/src/presentation/controller/auth/confirm_location_controller.dart';
+import 'package:restaurant_app/src/presentation/controller/auth/location_controller.dart';
 import 'package:restaurant_app/src/presentation/controller/auth/login_controller.dart';
 import 'package:restaurant_app/src/presentation/controller/auth/otp_controller.dart';
 import 'package:restaurant_app/src/presentation/controller/auth/sign_in_controller.dart';
@@ -9,6 +11,8 @@ import 'package:restaurant_app/src/presentation/controller/home_controller.dart'
 import 'package:restaurant_app/src/presentation/controller/onboarding_controller.dart';
 import 'package:restaurant_app/src/presentation/controller/product_controller.dart';
 import 'package:restaurant_app/src/presentation/controller/splash_controller.dart';
+import 'package:restaurant_app/src/presentation/view/auth/login/confirm_location_screen.dart';
+import 'package:restaurant_app/src/presentation/view/auth/login/location_screen.dart';
 import 'package:restaurant_app/src/presentation/view/auth/login/login_screen.dart';
 import 'package:restaurant_app/src/presentation/view/auth/login/otp_verification_screen.dart';
 import 'package:restaurant_app/src/presentation/view/auth/login/verification_success_screen.dart';
@@ -27,6 +31,8 @@ class AppRoutes {
   static const String otpVerification = '/otp-verification';
   static const String verificationSuccess = '/verification-success';
   static const String signIn = '/sign-in';
+   static const String location = '/location';
+  static const String confirmlocation = '/confirmlocation';
   static const String home = '/home';
   static const String product = '/product';
   static const String addproduct = '/addproduct';
@@ -37,7 +43,7 @@ class AppRoutes {
   static List<GetPage<dynamic>> get pages => [
     GetPage(
       name: splash,
-      page: () => const SplashScreen(),
+      page: () => SplashScreen(),
       binding: BindingsBuilder.put(SplashController.new),
     ),
     GetPage(
@@ -64,6 +70,16 @@ class AppRoutes {
       name: signIn,
       page: () => const SignInScreen(),
       binding: BindingsBuilder.put(SignInController.new),
+    ),
+    GetPage(
+      name: location,
+      page: () => LocationScreen(),
+      binding: BindingsBuilder.put(LocationController.new),
+    ),
+    GetPage(
+      name: confirmlocation,
+      page: () => ConfirmLocationScreen(),
+      binding: BindingsBuilder.put(LocationConfirmController.new),
     ),
     GetPage(
       name: home,

@@ -42,7 +42,15 @@ class TextHelper {
       color: AppColors.textprimary,
     );
   }
-
+  
+  static TextStyle get locationheading {
+    return GoogleFonts.inter(
+      fontSize: 20,
+      fontWeight: FontWeight.w500,
+      color: AppColors.locationtext,
+    );
+  }
+  
   static TextStyle get protext {
     return GoogleFonts.inter(
       fontSize: 18,

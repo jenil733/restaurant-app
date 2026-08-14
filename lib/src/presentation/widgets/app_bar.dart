@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
+import 'package:restaurant_app/src/core/utils/helper/texthelper.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
@@ -85,11 +86,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 child: Text(
                   actionText!,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+                  style:TextHelper.button.copyWith(
+                    fontSize:14,
+                    color:AppColors.white,
+                  )
                 ),
               ),
             ),

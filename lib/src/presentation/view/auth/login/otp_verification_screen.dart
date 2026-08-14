@@ -51,7 +51,7 @@ class OtpVerificationScreen extends GetView<OtpController> {
                       borderRadius: BorderRadius.circular(4),
                       child: Padding(
                         padding: const EdgeInsets.all(2),
-                        child: SvgPicture.asset(pen, width: 18, height: 18),
+                        child: SvgPicture.asset(pen, width: 20, height: 20),
                       ),
                     ),
                   ],

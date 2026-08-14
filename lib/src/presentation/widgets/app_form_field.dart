@@ -13,8 +13,10 @@ class AppFormField extends StatelessWidget {
     this.keyboardType,
     this.inputFormatters,
     this.prefixText,
+    this.prefixIcon,
     this.maxLines = 1,
     this.validator,
+    this.suffixIcon,
   });
 
   final String label;
@@ -24,8 +26,10 @@ class AppFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final String? prefixText;
+  final Widget? prefixIcon;
   final int maxLines;
   final FormFieldValidator<String>? validator;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +63,8 @@ class AppFormField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             prefixText: prefixText,
+            prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
             prefixStyle: TextHelper.heading2.copyWith(fontSize: 12),
             hintStyle: TextHelper.heading2.copyWith(
               color: AppColors.textprimary.withValues(alpha: 0.3),

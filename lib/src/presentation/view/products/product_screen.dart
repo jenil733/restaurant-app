@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
+import 'package:restaurant_app/src/presentation/controller/home_controller.dart';
 import 'package:restaurant_app/src/presentation/controller/product_controller.dart';
 import 'package:restaurant_app/src/presentation/view/products/add_product_screen.dart';
 import 'package:restaurant_app/src/presentation/view/products/edit_product_screen.dart';
@@ -21,6 +22,13 @@ class ProductListScreen extends StatelessWidget {
         actionText: 'Add Product',
         onActionPressed: () {
            Get.to(() => const AddProductScreen());
+        },
+        onBackPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else if (Get.isRegistered<HomeController>()) {
+            Get.find<HomeController>().changeTab(0);
+          }
         },
       ),
       body: GetBuilder<ProductController>(

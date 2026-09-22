@@ -106,10 +106,13 @@ class OtpVerificationScreen extends GetView<OtpController> {
                 ),
               ),
               const Spacer(),
-              AppButton(
-                text: 'Continue',
-                width: double.infinity,
-                onPressed: controller.verifyOtp,
+              Obx(
+                () => AppButton(
+                  text: 'Continue',
+                  isLoading: controller.isVerifying.value,
+                  width: double.infinity,
+                  onPressed: controller.verifyOtp,
+                ),
               ),
             ],
           ),

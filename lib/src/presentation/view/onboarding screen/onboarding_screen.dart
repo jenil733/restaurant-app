@@ -121,7 +121,9 @@ class _OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
-    final imageSize = (screenSize.width * 0.78).clamp(240.0, 332.0);
+    final maxHeightBasedSize = (screenSize.height * 0.32).clamp(160.0, 332.0);
+    final maxWidthBasedSize = (screenSize.width * 0.78).clamp(160.0, 332.0);
+    final imageSize = maxHeightBasedSize < maxWidthBasedSize ? maxHeightBasedSize : maxWidthBasedSize;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),

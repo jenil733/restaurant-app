@@ -6,7 +6,8 @@ import 'package:restaurant_app/src/presentation/controller/add_product_controlle
 import 'package:restaurant_app/src/presentation/view/products/widgets/product_dropdown.dart';
 import 'package:restaurant_app/src/presentation/view/products/widgets/product_textfield.dart';
 import 'package:restaurant_app/src/presentation/view/products/widgets/upload_image_widget.dart';
-
+import 'package:restaurant_app/src/presentation/view/products/category_screen.dart';
+import 'package:restaurant_app/src/presentation/view/products/add_category_screen.dart';
 import 'package:restaurant_app/src/presentation/widgets/app_bar.dart';
 import 'package:restaurant_app/src/presentation/widgets/button.dart';
 
@@ -15,12 +16,16 @@ class AddProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AddProductController());
+    Get.put(AddProductController());
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: "Add Product",
+        actionText: "Category",
+        onActionPressed: () {
+          Get.to(() => const CategoryScreen());
+        },
       ),
       body: GetBuilder<AddProductController>(
         builder: (controller) {
@@ -39,7 +44,11 @@ class AddProductScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              const UploadImageWidget(),
+              UploadImageWidget(
+                imagePath: controller.selectedImagePath,
+                onSourceSelected: controller.pickProductImage,
+                onRemove: controller.removeProductImage,
+              ),
 
               const SizedBox(height: 24),
 
@@ -49,18 +58,21 @@ class AddProductScreen extends StatelessWidget {
                 controller: controller.nameController,
               ),
 
-              const SizedBox(height: 20),
-
               ProductDropdown(
                 title: "Category",
-                hint: "Select",
+                hint: "Select or enter category",
                 value: controller.selectedCategory,
-                items: const [
-                  "Pizza",
-                  "Burger",
-                  "Drinks",
-                ],
+                items: controller.categoryItems,
                 onChanged: controller.setCategory,
+                addNewLabel: "Add New Category",
+                onAddNew: () {
+                  final isCustom = controller.selectedCategory != null &&
+                      controller.selectedCategory!.isNotEmpty &&
+                      !controller.categoryItems.contains(controller.selectedCategory);
+                  Get.to(() => AddCategoryScreen(
+                        initialName: isCustom ? controller.selectedCategory : null,
+                      ));
+                },
               ),
 
               const SizedBox(height: 20),
@@ -122,6 +134,7 @@ class AddProductScreen extends StatelessWidget {
 
               CustomButton(
                 text: "Submit",
+                isLoading: controller.isSubmittingProduct,
                 onTap: controller.submit,
               ),
 

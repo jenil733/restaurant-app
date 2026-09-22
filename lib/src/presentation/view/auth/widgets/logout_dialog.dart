@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:restaurant_app/src/core/di/service_locator.dart';
+import 'package:restaurant_app/src/core/services/local_storage_services.dart';
 import 'package:restaurant_app/src/core/utils/navigation/app_routes.dart';
+import 'package:restaurant_app/src/domain/usecase/logout_usecase.dart';
+
 void showLogoutDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -83,9 +87,19 @@ void showLogoutDialog(BuildContext context) {
                       child: ElevatedButton(
                         onPressed: () async {
                           Navigator.pop(context);
-                          final prefs = await SharedPreferences.getInstance();
-                          await prefs.clear();
-                          Get.offAllNamed<void>(AppRoutes.login);
+                          try {
+                            if (sl.isRegistered<LogoutUseCase>()) {
+                              await sl<LogoutUseCase>()();
+                            }
+                          } catch (e) {
+                            debugPrint("Logout API error: $e");
+                          } finally {
+                            final storage = LocalStorageService();
+                            await storage.clear();
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.clear();
+                            Get.offAllNamed<void>(AppRoutes.login);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xffFF3941),

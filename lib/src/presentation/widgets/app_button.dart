@@ -11,6 +11,7 @@ class AppButton extends StatelessWidget {
     this.backgroundColor = AppColors.primary,
     this.foregroundColor = AppColors.white,
     this.style,
+    this.isLoading = false,
   });
 
   final String text;
@@ -20,6 +21,7 @@ class AppButton extends StatelessWidget {
   final Color backgroundColor;
   final Color foregroundColor;
   final TextStyle? style;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class AppButton extends StatelessWidget {
       width: width,
       height: height,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           elevation: 0,
           backgroundColor: backgroundColor,
@@ -38,7 +40,16 @@ class AppButton extends StatelessWidget {
               style ??
               const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
-        child: Text(text),
+        child: isLoading
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+                ),
+              )
+            : Text(text),
       ),
     );
   }

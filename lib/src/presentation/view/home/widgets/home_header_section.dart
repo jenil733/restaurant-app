@@ -62,27 +62,91 @@ class _HeaderControls extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(5),
-            boxShadow: const [
-              BoxShadow(color: Color(0x17000000), blurRadius: 8),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-            child: Row(
-              children: [
-                const CircleAvatar(radius: 8, backgroundColor: AppColors.green),
-                const SizedBox(width: 6),
-                Text(
-                  'Online',
-                  style: TextHelper.provalue1
+        Builder(
+          builder: (context) {
+            final homeController = Get.isRegistered<HomeController>()
+                ? Get.find<HomeController>()
+                : null;
+
+            if (homeController == null) {
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: const [
+                    BoxShadow(color: Color(0x17000000), blurRadius: 8),
+                  ],
                 ),
-              ],
-            ),
-          ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(radius: 8, backgroundColor: AppColors.green),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Online',
+                        style: TextHelper.provalue1,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            return Obx(() {
+              final isOnline = homeController.isOnline.value;
+              final isUpdating = homeController.isUpdatingStatus.value;
+
+              return GestureDetector(
+                onTap: homeController.toggleOnlineStatus,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                      color: isOnline
+                          ? AppColors.green.withOpacity(0.3)
+                          : const Color(0xFFE0E0E0),
+                    ),
+                    boxShadow: const [
+                      BoxShadow(color: Color(0x17000000), blurRadius: 8),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+                    child: Row(
+                      children: [
+                        if (isUpdating)
+                          const SizedBox(
+                            width: 12,
+                            height: 12,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.primary,
+                            ),
+                          )
+                        else
+                          CircleAvatar(
+                            radius: 6,
+                            backgroundColor:
+                                isOnline ? AppColors.green : const Color(0xFF9E9E9E),
+                          ),
+                        const SizedBox(width: 6),
+                        Text(
+                          isOnline ? 'Online' : 'Offline',
+                          style: TextHelper.provalue1.copyWith(
+                            color: isOnline ? const Color(0xFF252B35) : const Color(0xFF757575),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            });
+          },
         ),
         const Spacer(),
         const _HeaderIcon(asset: notificationIcon),

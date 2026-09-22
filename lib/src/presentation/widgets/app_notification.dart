@@ -1,76 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
-import 'package:restaurant_app/src/core/utils/helper/texthelper.dart';
 
 class AppNotification {
   const AppNotification._();
 
-  static void showError({required String title, required String message}) {
-    _show(
-      title: title,
-      message: message,
-      color: AppColors.red,
-      icon: Icons.error_outline_rounded,
-    );
+  static void show(String title, String msg, bool error) {
+    try {
+      if (Get.context == null && Get.key.currentState == null) {
+        return;
+      }
+      if (Get.isSnackbarOpen) {
+        Get.closeCurrentSnackbar();
+      }
+      final bgColor = error ? AppColors.red : AppColors.green;
+      Get.showSnackbar(
+        GetSnackBar(
+          titleText: title.trim().isNotEmpty
+              ? Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                )
+              : null,
+          messageText: Text(
+            msg,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          snackPosition: SnackPosition.TOP,
+          isDismissible: true,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          margin: const EdgeInsets.all(15),
+          borderRadius: 8,
+          borderColor: bgColor,
+          duration: const Duration(milliseconds: 2500),
+          backgroundColor: bgColor,
+          icon: Icon(
+            error ? Icons.error_outline_rounded : Icons.check_circle_outline_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
+        ),
+      );
+    } catch (e) {
+      debugPrint("AppNotification show error: $e");
+    }
   }
 
   static void showSuccess({required String title, required String message}) {
-    _show(
-      title: title,
-      message: message,
-      color: AppColors.green,
-      icon: Icons.check_circle_outline_rounded,
-    );
+    show(title, message, false);
   }
 
-  static void _show({
-    required String title,
-    required String message,
-    required Color color,
-    required IconData icon,
-  }) {
-    final context = Get.context;
-    if (context == null || !context.mounted) return;
+  static void showError({required String title, required String message}) {
+    show(title, message, true);
+  }
 
-    final messenger = ScaffoldMessenger.maybeOf(context);
-    if (messenger == null) return;
-
-    messenger
-      ..hideCurrentMaterialBanner()
-      ..showMaterialBanner(
-        MaterialBanner(
-          elevation: 2,
-          backgroundColor: AppColors.background,
-          leading: Icon(icon, color: color, size: 25),
-          padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: TextHelper.heading1.copyWith(fontSize: 14)),
-              const SizedBox(height: 2),
-              Text(message, style: TextHelper.heading2.copyWith(fontSize: 11)),
-            ],
-          ),
-          actions: [
-            IconButton(
-              tooltip: 'Dismiss',
-              onPressed: messenger.hideCurrentMaterialBanner,
-              icon: Icon(
-                Icons.close_rounded,
-                size: 18,
-                color: AppColors.textprimary.withValues(alpha: 0.55),
-              ),
+  static void showDeleted({required String title, required String message}) {
+    try {
+      if (Get.context == null && Get.key.currentState == null) {
+        return;
+      }
+      if (Get.isSnackbarOpen) {
+        Get.closeCurrentSnackbar();
+      }
+      Get.showSnackbar(
+        GetSnackBar(
+          titleText: title.trim().isNotEmpty
+              ? Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                )
+              : null,
+          messageText: Text(
+            message,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
             ),
-          ],
+          ),
+          snackPosition: SnackPosition.TOP,
+          isDismissible: true,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          margin: const EdgeInsets.all(15),
+          borderRadius: 8,
+          borderColor: AppColors.red,
+          duration: const Duration(milliseconds: 2500),
+          backgroundColor: AppColors.red,
+          icon: const Icon(
+            Icons.delete_outline_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
         ),
       );
-
-    Future<void>.delayed(const Duration(seconds: 3), () {
-      if (messenger.mounted) {
-        messenger.hideCurrentMaterialBanner();
-      }
-    });
+    } catch (e) {
+      debugPrint("AppNotification showDeleted error: $e");
+    }
   }
 }
+

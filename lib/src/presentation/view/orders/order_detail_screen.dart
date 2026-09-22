@@ -24,51 +24,75 @@ class OrderDetailScreen extends StatelessWidget {
         title: "Order Details",
       ),
 
-      body: Obx(
-        () => SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              OrderInfoCard(),
+      body: RefreshIndicator(
+        onRefresh: () => controller.fetchOrderDetails(controller.rawOrderId, isRefresh: true),
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xffF37021),
+              ),
+            );
+          }
 
-              const SizedBox(height: 16),
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                OrderInfoCard(),
 
-              CustomerDetailCard(),
-
-              const SizedBox(height: 16),
-
-              OrderedItemsCard(),
-
-              if (controller.orderStatus.value == "Pending") ...[
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF22C55E),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
+
+                CustomerDetailCard(),
+
+                const SizedBox(height: 16),
+
+                OrderedItemsCard(),
+
+                if (controller.orderStatus.value.toLowerCase() == "pending" ||
+                    controller.orderStatus.value.toLowerCase() == "accepted") ...[
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: controller.isMarkingFoodReady.value
+                          ? null
+                          : () => controller.markFoodReady(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF22C55E),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      "Food Ready",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      child: controller.isMarkingFoodReady.value
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              "Food Ready",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                     ),
                   ),
-                ),
-              ],
+                ],
 
-              const SizedBox(height: 25),
-            ],
-          ),
-        ),
+                const SizedBox(height: 25),
+              ],
+            ),
+          );
+        }),
       ),
 
       bottomNavigationBar: SafeArea(
@@ -80,136 +104,162 @@ class OrderDetailScreen extends StatelessWidget {
             top: 12,
             bottom: 28,
           ),
-          child: ((Get.arguments != null && Get.arguments["status"] == "Pending") || Get.arguments == null)
-              ? Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 54,
-                        child: OutlinedButton(
-                          onPressed: () {
-                      RejectOrderDialog.show(
-                        onSubmit: (reason) {
-                          controller.rejectOrder(reason);
-                        },
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Colors.red,
-                        width: 1.5,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.cancel_outlined,
-                          color: Colors.red,
-                          size: 22,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          "Reject Order",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
+          child: Obx(
+            () => (controller.orderStatus.value.toLowerCase() == "pending")
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 54,
+                          child: OutlinedButton(
+                            onPressed: (controller.isRejecting.value ||
+                                    controller.isAccepting.value)
+                                ? null
+                                : () {
+                                    RejectOrderDialog.show(
+                                      onSubmit: (reason) {
+                                        controller.rejectOrder(reason);
+                                      },
+                                    );
+                                  },
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.red,
+                                width: 1.5,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: controller.isRejecting.value
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.red,
+                                        size: 22,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        "Reject Order",
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 18),
-
-              Expanded(
-                child: SizedBox(
-                  height: 58,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      AcceptOrderDialog.show(
-                        onAccept: controller.acceptOrder,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xffF37021),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.white,
-                          size: 22,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          "Accept Order",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
+                      const SizedBox(width: 18),
+                      Expanded(
+                        child: SizedBox(
+                          height: 58,
+                          child: ElevatedButton(
+                            onPressed: (controller.isAccepting.value ||
+                                    controller.isRejecting.value)
+                                ? null
+                                : () {
+                                    AcceptOrderDialog.show(
+                                      onAccept: controller.acceptOrder,
+                                    );
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xffF37021),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: controller.isAccepting.value
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.check_circle_outline,
+                                        color: Colors.white,
+                                        size: 22,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        "Accept Order",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                           ),
                         ),
-                      ],
+                      ),
+                    ],
+                  )
+                : SizedBox(
+                    height: 54,
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: controller.isDownloadingInvoice.value
+                          ? null
+                          : () => controller.downloadInvoice(),
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(
+                          color: Color(0xffF37021),
+                          width: 1.5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: controller.isDownloadingInvoice.value
+                          ? const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.download,
+                              color: AppColors.primary,
+                            ),
+                      label: Text(
+                        controller.isDownloadingInvoice.value
+                            ? "Downloading..."
+                            : "Download Invoice",
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
-          )
-        : SizedBox(
-            height: 54,
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Get.snackbar(
-                  "Success",
-                  "Invoice downloaded successfully",
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.green,
-                  colorText: Colors.white,
-                );
-              },
-              style: OutlinedButton.styleFrom(
-      backgroundColor: Colors.white,
-      side: const BorderSide(
-        color: Color(0xffF37021),
-        width: 1.5,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-    ),
-              icon: const Icon(
-                Icons.download,
-                color: AppColors.primary,
-              ),
-              label: const Text(
-                "Download Invoice",
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
           ),
-          
-  ),
-  
-),
-      );
-    
+        ),
+      ),
+    );
   }
 }

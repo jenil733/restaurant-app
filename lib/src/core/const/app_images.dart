@@ -30,4 +30,5 @@ const String homeBanner = 'assets/images/banner.svg';
 const String sideMenuIcon = 'assets/images/sidemenu.svg';
 const String notificationIcon = 'assets/images/notificatio_icon.svg';
 const String product = 'assets/images/product.png';
-// const String notificationIcon = 'assets/images/notificatio_icon.svg';
+const String storeIcon = 'assets/images/store_icon.svg';
+const String notificationImg = 'assets/images/notificationimg.png';

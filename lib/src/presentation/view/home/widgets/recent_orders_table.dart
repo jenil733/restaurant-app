@@ -3,20 +3,18 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/utils/helper/texthelper.dart';
+import 'package:restaurant_app/src/presentation/controller/home_controller.dart';
 import 'package:restaurant_app/src/presentation/view/orders/order_detail_screen.dart';
 
 class RecentOrdersTable extends StatelessWidget {
   const RecentOrdersTable({super.key});
 
-  static const _rows = [
-    ('1', '#1001', 'Chicken\nBiriyani', '2'),
-    ('1', '#1001', 'Chicken\nBiriyani', '2'),
-    ('1', '#1001', 'Chicken\nBiriyani', '2'),
-    ('1', '#1001', 'Chicken\nBiriyani', '2'),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final homeController = Get.isRegistered<HomeController>()
+        ? Get.find<HomeController>()
+        : null;
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -31,18 +29,76 @@ class RecentOrdersTable extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            const _OrderTableRow(
-              values: ['Sno', 'Order ID', 'Product', 'Qty', 'View', 'Status'],
-              isHeader: true,
-            ),
-            for (final row in _rows)
-              _OrderTableRow(
-                values: [row.$1, row.$2, row.$3, row.$4, 'View', 'Pending'],
+        child: Obx(() {
+          final isLoading = homeController?.isLoadingDashboard.value ?? false;
+          final liveOrders = homeController?.recentOrders ?? [];
+
+          if (isLoading) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 36),
+              child: Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: AppColors.primary,
+                ),
               ),
-          ],
-        ),
+            );
+          }
+
+          if (liveOrders.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.receipt_long_outlined,
+                    size: 38,
+                    color: AppColors.textprimary.withValues(alpha: 0.28),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'No Recent Orders',
+                    style: TextHelper.heading2.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textprimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Customer orders will appear here automatically.',
+                    textAlign: TextAlign.center,
+                    style: TextHelper.heading2.copyWith(
+                      fontSize: 11,
+                      color: AppColors.textprimary.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return Column(
+            children: [
+              const _OrderTableRow(
+                values: ['Sno', 'Order ID', 'Product', 'Qty', 'View', 'Status'],
+                isHeader: true,
+              ),
+              for (var i = 0; i < liveOrders.length; i++)
+                _OrderTableRow(
+                  values: [
+                    '${i + 1}',
+                    liveOrders[i].orderId,
+                    liveOrders[i].productName,
+                    '${liveOrders[i].quantity}',
+                    'View',
+                    liveOrders[i].status,
+                  ],
+                ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -81,18 +137,21 @@ class _OrderTableRow extends StatelessWidget {
   Widget _buildCell(int index) {
     final value = values[index];
     if (!isHeader && value == 'Pending') {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Text(
-          'Pending',
-          style:TextHelper.button.copyWith(
-            fontSize:11,
-            color:AppColors.white,
-          )
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: Text(
+            'Pending',
+            style: TextHelper.button.copyWith(
+              fontSize: 11,
+              color: AppColors.white,
+            ),
+          ),
         ),
       );
     }

@@ -17,6 +17,9 @@ class AppFormField extends StatelessWidget {
     this.maxLines = 1,
     this.validator,
     this.suffixIcon,
+    this.readOnly = false,
+    this.onTap,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   final String label;
@@ -30,6 +33,9 @@ class AppFormField extends StatelessWidget {
   final int maxLines;
   final FormFieldValidator<String>? validator;
   final Widget? suffixIcon;
+  final bool readOnly;
+  final VoidCallback? onTap;
+  final TextCapitalization textCapitalization;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +61,10 @@ class AppFormField extends StatelessWidget {
         const SizedBox(height: 6),
         TextFormField(
           controller: controller,
+          readOnly: readOnly,
+          onTap: onTap,
           keyboardType: keyboardType,
+          textCapitalization: textCapitalization,
           inputFormatters: inputFormatters,
           maxLines: maxLines,
           validator: validator,

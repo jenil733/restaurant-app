@@ -18,7 +18,9 @@ class OrderTheme {
 class OrdersScreen extends StatelessWidget {
   OrdersScreen({super.key});
 
-  final OrderController controller = Get.put(OrderController());
+  final OrderController controller = Get.isRegistered<OrderController>()
+      ? Get.find<OrderController>()
+      : Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -34,39 +36,41 @@ class OrdersScreen extends StatelessWidget {
           }
         },
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTabBar(),
-            const SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+      body: RefreshIndicator(
+        onRefresh: () => controller.fetchOrders(isRefresh: true),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTabBar(),
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildToolbar(),
+                    const SizedBox(height: 12),
+                    _buildTable(),
+                  ],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildToolbar(),
-                  const SizedBox(height: 12),
-                  _buildTable(),
-                  // const SizedBox(height: 4),
-                  // _buildPagination(),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -98,17 +102,21 @@ class OrdersScreen extends StatelessWidget {
                           : Colors.grey.shade300,
                     ),
                   ),
-                  child: Text(
-                    "${controller.tabs[index]} (${controller.tabCounts[index]})",
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: controller.selectedTab.value == index
-                          ? Colors.white
-                          : Colors.black87,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text(
+                        "${controller.tabs[index]} (${controller.tabCounts[index]})",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: controller.selectedTab.value == index
+                              ? Colors.white
+                              : Colors.black87,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -123,47 +131,63 @@ class OrdersScreen extends StatelessWidget {
   /// ---------- Show entries dropdown + Search ----------
   Widget _buildToolbar() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text("Show", style: TextStyle(color: Colors.grey)),
-        const SizedBox(width: 8),
-        Obx(
-          () => SizedBox(
-          width: 68,
-          height: 35,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<int>(
-                value: controller.entriesPerPage.value,
-                items: const [10, 25, 50, 100]
-                    .map((e) => DropdownMenuItem(value: e, child: Text("$e")))
-                    .toList(),
-                onChanged: (v) {
-                  if (v != null) controller.changeEntriesPerPage(v);
-                },
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("Show", style: TextStyle(color: Colors.grey)),
+            const SizedBox(width: 8),
+            Obx(
+              () => SizedBox(
+                width: 68,
+                height: 35,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      isExpanded: true,
+                      isDense: true,
+                      value: controller.entriesPerPage.value,
+                      items: const [10, 25, 50, 100]
+                          .map((e) => DropdownMenuItem(value: e, child: Text("$e")))
+                          .toList(),
+                      onChanged: (v) {
+                        if (v != null) controller.changeEntriesPerPage(v);
+                      },
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
-        ),
-        const SizedBox(width: 85),
-        SizedBox(
-          width: 120,
-          height: 38,
-          child: TextField(
-            onChanged: controller.onSearchChanged,
-            decoration: InputDecoration(
-              hintText: "Search",
-              hintStyle: const TextStyle(fontSize: 13),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6),
-                borderSide: BorderSide(color: Colors.grey.shade300),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: SizedBox(
+              width: 130,
+              height: 38,
+              child: TextField(
+                onChanged: controller.onSearchChanged,
+                decoration: InputDecoration(
+                  hintText: "Search",
+                  hintStyle: const TextStyle(fontSize: 13),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                ),
               ),
             ),
           ),
@@ -219,94 +243,143 @@ class OrdersScreen extends StatelessWidget {
             );
           }),
         ),
-        Obx(
-          () => ListView.builder(
+        Obx(() {
+          if (controller.isLoading.value && controller.orders.isEmpty) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 40),
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: OrderTheme.orange,
+                ),
+              ),
+            );
+          }
+
+          if (controller.errorMessage.value != null && controller.orders.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 30),
+              child: Center(
+                child: Column(
+                  children: [
+                    Text(
+                      controller.errorMessage.value!,
+                      style: const TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () => controller.fetchOrders(isRefresh: true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: OrderTheme.orange,
+                      ),
+                      child: const Text("Retry", style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          final list = controller.filteredOrders;
+
+          if (list.isEmpty) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 40),
+              child: Center(
+                child: Text(
+                  "No orders found",
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+              ),
+            );
+          }
+
+          return ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.filteredOrders.length,
+            itemCount: list.length,
             itemBuilder: (context, index) {
-                final order = controller.filteredOrders[index];
-                final bool isEven = index % 2 == 0;
-                final isNew = controller.selectedTab.value == 0;
+              final order = list[index];
+              final isNew = controller.selectedTab.value == 0;
 
-                return Container(
-                  decoration: BoxDecoration(
-                    color:  Colors.white,
-                    border: const Border(bottom: BorderSide(color: Color(0xFFF0E5D8))),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 0),
-                  child: Row(
-                    children: isNew
-                        ? [
-                            Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                            Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                            Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A), height: 1.2)))),
-                            Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                            Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: GestureDetector(
-                                  onTap: () => controller.onView(index),
-                                  child: const Text(
-                                    "View",
-                                    style: TextStyle(
-                                      color: Color(0xFF22C55E),
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Color(0xFF22C55E),
-                                    ),
+              return Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  border: Border(bottom: BorderSide(color: Color(0xFFF0E5D8))),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 0),
+                child: Row(
+                  children: isNew
+                      ? [
+                          Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A), height: 1.2)))),
+                          Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              child: GestureDetector(
+                                onTap: () => controller.onView(index),
+                                child: const Text(
+                                  "View",
+                                  style: TextStyle(
+                                    color: Color(0xFF22C55E),
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Color(0xFF22C55E),
                                   ),
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: OrderTheme.orange,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text(
-                                    order["status"] ?? "",
-                                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: OrderTheme.orange,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  order["status"] ?? "",
+                                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ]
+                      : [
+                          Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["date"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A), height: 1.2)))),
+                          Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              child: GestureDetector(
+                                onTap: () => controller.onView(index),
+                                child: const Text(
+                                  "View",
+                                  style: TextStyle(
+                                    color: Color(0xFF22C55E),
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Color(0xFF22C55E),
                                   ),
                                 ),
                               ),
                             ),
-                          ]
-                        : [
-                            Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                            Expanded(flex: 2, child: Center(child: Text(order["date"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                            Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                            Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A), height: 1.2)))),
-                            Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                            Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: GestureDetector(
-                                  onTap: () => controller.onView(index),
-                                  child: const Text(
-                                    "View",
-                                    style: TextStyle(
-                                      color: Color(0xFF22C55E),
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Color(0xFF22C55E),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildPagination(),
+                          ),
+                        ],
+                ),
+              );
+            },
+          );
+        }),
+        const SizedBox(height: 16),
+        _buildPagination(),
       ],
     );
   }
@@ -322,8 +395,12 @@ class OrdersScreen extends StatelessWidget {
   /// ---------- Pagination footer ----------
   Widget _buildPagination() {
     return Obx(
-      () => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      () => Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        runAlignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 8,
+        runSpacing: 8,
         children: [
           Text(
             "Showing ${controller.showingFrom} to "
@@ -332,16 +409,17 @@ class OrdersScreen extends StatelessWidget {
             style: const TextStyle(color: Colors.grey, fontSize: 12),
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               _PageIconButton(
                 icon: Icons.first_page,
                 onTap: controller.goToFirstPage,
-                 isDisabled: controller.currentPage.value == 1,
+                isDisabled: controller.currentPage.value == 1,
               ),
               _PageIconButton(
                 icon: Icons.chevron_left,
                 onTap: controller.goToPreviousPage,
-                 isDisabled: controller.currentPage.value == 1,
+                isDisabled: controller.currentPage.value == 1,
               ),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -358,10 +436,12 @@ class OrdersScreen extends StatelessWidget {
               _PageIconButton(
                 icon: Icons.chevron_right,
                 onTap: controller.goToNextPage,
+                isDisabled: controller.currentPage.value >= controller.totalPages,
               ),
               _PageIconButton(
                 icon: Icons.last_page,
                 onTap: controller.goToLastPage,
+                isDisabled: controller.currentPage.value >= controller.totalPages,
               ),
             ],
           ),
@@ -381,9 +461,11 @@ class _HeaderCell extends StatelessWidget {
     return Center(
       child: Text(
         label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontWeight: FontWeight.w500,
-          fontSize: 13,
+          fontSize: 12,
           color: Color(0xFF4A4A4A),
         ),
       ),
@@ -395,12 +477,12 @@ class _PageIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final bool isDisabled;
-  const _PageIconButton({required this.icon, required this.onTap,this.isDisabled = false,});
+  const _PageIconButton({required this.icon, required this.onTap, this.isDisabled = false});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: isDisabled ? null : onTap,
       borderRadius: BorderRadius.circular(6),
       child: Container(
         width: 28,
@@ -408,14 +490,14 @@ class _PageIconButton extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 2),
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color: isDisabled ? Colors.grey.shade100 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(6),
         ),
         child: Icon(
           icon,
           size: 15,
           color: isDisabled
-              ? Colors.grey
+              ? Colors.grey.shade400
               : Colors.black87,
         ),
       ),

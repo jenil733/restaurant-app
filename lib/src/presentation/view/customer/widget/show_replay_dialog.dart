@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/src/presentation/widgets/button.dart';
 
-void showReplyDialog(BuildContext context) {
+void showReplyDialog(
+  BuildContext context, {
+  Function(String message)? onSubmit,
+}) {
   final TextEditingController messageController = TextEditingController();
 
   showDialog(
     context: context,
     barrierDismissible: true,
-    builder: (context) {
+    builder: (dialogContext) {
       return Dialog(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -23,7 +26,7 @@ void showReplyDialog(BuildContext context) {
               // Title
               const Center(
                 child: Text(
-                  "Send Replay",
+                  "Send Reply",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -61,7 +64,7 @@ void showReplyDialog(BuildContext context) {
                 maxLines: 3,
                 textAlignVertical: TextAlignVertical.top,
                 decoration: InputDecoration(
-                  hintText: "Enter",
+                  hintText: "Enter your reply...",
                   hintStyle: const TextStyle(
                     fontSize: 14,
                     color: Color(0xffAEB3BD),
@@ -82,7 +85,7 @@ void showReplyDialog(BuildContext context) {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
                     borderSide: const BorderSide(
-                      color: Color(0xffD1D3D8),
+                      color: Color(0xffFF8A3D),
                     ),
                   ),
                 ),
@@ -101,8 +104,10 @@ void showReplyDialog(BuildContext context) {
 
                       if (message.isEmpty) return;
 
-                      Navigator.pop(context);
-                      // API / controller call here
+                      Navigator.pop(dialogContext);
+                      if (onSubmit != null) {
+                        onSubmit(message);
+                      }
                     },
                   ),
                 ),

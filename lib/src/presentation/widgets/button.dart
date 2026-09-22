@@ -9,6 +9,9 @@ class CustomButton extends StatelessWidget {
   final double? borderRadius;
   final Color? backgroundColor;
   final Color? textColor;
+  final double? fontSize;
+  final FontWeight? fontWeight;
+  final TextStyle? textStyle;
   final bool isLoading;
 
   const CustomButton({
@@ -20,6 +23,9 @@ class CustomButton extends StatelessWidget {
     this.borderRadius,
     this.backgroundColor,
     this.textColor,
+    this.fontSize,
+    this.fontWeight,
+    this.textStyle,
     this.isLoading = false,
   });
 
@@ -48,11 +54,12 @@ class CustomButton extends StatelessWidget {
               )
             : Text(
                 text,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: textColor ?? Colors.white,
-                ),
+                style: textStyle ??
+                    TextStyle(
+                      fontSize: fontSize ?? 18,
+                      fontWeight: fontWeight ?? FontWeight.w600,
+                      color: textColor ?? Colors.white,
+                    ),
               ),
       ),
     );

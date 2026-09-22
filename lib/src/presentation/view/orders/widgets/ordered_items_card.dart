@@ -130,24 +130,35 @@ ClipRRect(
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(5),
-                        child: Image.network(
-                          item["image"],
-                          width: 42,
-                          height: 42,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 42,
-                              height: 42,
-                              color: Colors.grey[200],
-                              child: const Icon(
-                                Icons.image_not_supported,
-                                size: 20,
-                                color: Colors.grey,
+                        child: (item["image"] != null && item["image"].toString().isNotEmpty)
+                            ? Image.network(
+                                item["image"].toString(),
+                                width: 42,
+                                height: 42,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 42,
+                                    height: 42,
+                                    color: Colors.grey[200],
+                                    child: const Icon(
+                                      Icons.fastfood,
+                                      size: 20,
+                                      color: Colors.grey,
+                                    ),
+                                  );
+                                },
+                              )
+                            : Container(
+                                width: 42,
+                                height: 42,
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.fastfood,
+                                  size: 20,
+                                  color: Colors.grey,
+                                ),
                               ),
-                            );
-                          },
-                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(

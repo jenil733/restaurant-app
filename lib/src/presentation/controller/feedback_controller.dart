@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:restaurant_app/src/core/const/app_images.dart';
+import '../../core/di/service_locator.dart';
+import '../../core/services/api_services.dart';
+import '../../data/models/feedback_model.dart';
+import '../../data/repository/feedback_repository_impl.dart';
+import '../../domain/usecase/get_feedbacks_usecase.dart';
 
 class FeedbackController extends GetxController {
+  late final GetFeedbacksUseCase _getFeedbacksUseCase;
+
   final TextEditingController searchController = TextEditingController();
 
   RxString selectedFilter = "All".obs;
@@ -16,69 +22,61 @@ class FeedbackController extends GetxController {
     "1 Star",
   ];
 
-  RxDouble averageRating = 4.8.obs;
-  RxInt totalFeedbacks = 248.obs;
+  var isLoading = false.obs;
+  var errorMessage = RxnString();
 
-  RxList<Map<String, dynamic>> feedbackList = <Map<String, dynamic>>[
-    {
-      "name": "David Wilson",
-      "image": homeStoreImg,
-      "rating": 4,
-      "time": "2 hrs ago",
-      "review":
-          "Excellent service. The booking process was smooth and simple."
-    },
-    {
-      "name": "David Wilson",
-      "image": homeStoreImg,
-      "rating": 5,
-      "time": "2 hrs ago",
-      "review":
-          "Excellent service. The booking process was smooth and simple."
-    },
-    {
-      "name": "John Miller",
-      "image": homeStoreImg,
-      "rating": 5,
-      "time": "5 hrs ago",
-      "review":
-          "Very tasty food. Fast delivery and excellent customer support."
-    },
-    {
-      "name": "William",
-      "image": homeStoreImg,
-      "rating": 3,
-      "time": "Yesterday",
-      "review":
-          "Food was good but delivery was slightly delayed."
-    },
-    {
-      "name": "Sophia",
-      "image": homeStoreImg,
-      "rating": 5,
-      "time": "2 days ago",
-      "review":
-          "Amazing experience. Highly recommended."
-    },
-  ].obs;
+  RxDouble averageRating = 5.0.obs;
+  RxInt totalFeedbacks = 0.obs;
 
-  List<Map<String, dynamic>> get filteredFeedback {
+  RxList<FeedbackItemModel> feedbackList = <FeedbackItemModel>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _getFeedbacksUseCase = sl.isRegistered<GetFeedbacksUseCase>()
+        ? sl<GetFeedbacksUseCase>()
+        : GetFeedbacksUseCase(FeedbackRepositoryImpl(ApiService()));
+
+    fetchFeedbacks();
+  }
+
+  Future<void> fetchFeedbacks({bool isRefresh = false}) async {
+    if (!isRefresh && feedbackList.isNotEmpty) {
+      // Refresh silently
+    } else {
+      isLoading.value = true;
+    }
+    errorMessage.value = null;
+
+    try {
+      final response = await _getFeedbacksUseCase();
+      if (response.data != null) {
+        final data = response.data!;
+        feedbackList.assignAll(data.feedbacks);
+        totalFeedbacks.value = data.totalFeedbacks;
+        averageRating.value = data.averageRating;
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
+      debugPrint("Error fetching feedbacks: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  List<FeedbackItemModel> get filteredFeedback {
     var list = feedbackList.toList();
 
     if (selectedFilter.value != "All") {
-      final rating = int.parse(selectedFilter.value.split(" ").first);
-
-      list = list
-          .where((e) => e["rating"] == rating)
-          .toList();
+      final rating = int.tryParse(selectedFilter.value.split(" ").first) ?? 5;
+      list = list.where((e) => e.rating.round() == rating).toList();
     }
 
     if (searchController.text.isNotEmpty) {
+      final query = searchController.text.toLowerCase().trim();
       list = list.where((e) {
-        return e["name"]
-            .toString()
-            .toLowerCase()
-            .contains(searchController.text.toLowerCase());
+        return e.name.toLowerCase().contains(query) ||
+            e.review.toLowerCase().contains(query);
       }).toList();
     }
 
@@ -87,7 +85,6 @@ class FeedbackController extends GetxController {
 
   void changeFilter(String value) {
     selectedFilter.value = value;
-    update();
   }
 
   void search(String value) {

@@ -31,8 +31,9 @@ class AppRoutes {
   static const String otpVerification = '/otp-verification';
   static const String verificationSuccess = '/verification-success';
   static const String signIn = '/sign-in';
-   static const String location = '/location';
+  static const String location = '/location';
   static const String confirmlocation = '/confirmlocation';
+  static const String notification = '/notification';
   static const String home = '/home';
   static const String product = '/product';
   static const String addproduct = '/addproduct';
@@ -81,6 +82,7 @@ class AppRoutes {
       page: () => ConfirmLocationScreen(),
       binding: BindingsBuilder.put(LocationConfirmController.new),
     ),
+   
     GetPage(
       name: home,
       page: () => HomeScreen(),
@@ -95,11 +97,6 @@ class AppRoutes {
       name: addproduct,
       page: () => const AddProductScreen(),
       binding: BindingsBuilder.put(AddProductController.new),
-    ),
-    GetPage(
-      name: editproduct,
-      page: () => const EditProductScreen(),
-      binding: BindingsBuilder.put(EditProductController.new),
     ),
     GetPage(
       name: editproduct,

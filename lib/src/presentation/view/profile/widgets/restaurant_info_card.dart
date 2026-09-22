@@ -3,32 +3,66 @@ import 'package:get/get.dart';
 import 'package:restaurant_app/src/presentation/controller/profile_controller.dart';
 import 'package:restaurant_app/src/presentation/view/profile/add_profile_screen.dart';
 
-
 Widget restaurantCard(ProfileController controller) {
   return Obx(
     () => infoCard(
       title: "Restaurant Information",
       icon: Icons.storefront_outlined,
       children: [
-        infoRow(Icons.storefront_outlined, "Restaurant Name",
-            controller.restaurantName.value,showArrow: true,
+        infoRow(
+          Icons.storefront_outlined,
+          "Restaurant Name",
+          controller.restaurantName.value.isNotEmpty ? controller.restaurantName.value : "N/A",
+          showArrow: true,
           onTap: () {
-            Get.to(() => ProfileScreen());
-          },),
-        infoRow(Icons.person, "Owner Name",
-            controller.ownerName.value),
-        infoRow(Icons.call, "Mobile Number",
-            controller.mobile.value,
-            iconColor: Colors.green,
-            bgColor: Colors.green.withOpacity(0.1)),
-        infoRow(Icons.email_outlined, "Email Address",
-            controller.email.value,
-            iconColor: Colors.blue,
-            bgColor: Colors.blue.withOpacity(0.1)),
-        infoRow(Icons.location_on, "Restaurant Address",
-            controller.address.value,
-            iconColor: Colors.red,
-            bgColor: Colors.red.withOpacity(0.1)),
+            Get.to(() => const ProfileScreen());
+          },
+        ),
+        infoRow(
+          Icons.restaurant_menu,
+          "Restaurant Type",
+          controller.foodType.value.isNotEmpty ? controller.foodType.value : "N/A",
+          iconColor: Colors.deepOrange,
+          bgColor: Colors.deepOrange.withOpacity(0.1),
+        ),
+        infoRow(
+          Icons.person,
+          "Owner Name",
+          controller.ownerName.value.isNotEmpty ? controller.ownerName.value : "N/A",
+        ),
+        infoRow(
+          Icons.call,
+          "Mobile Number",
+          controller.mobile.value.isNotEmpty ? controller.mobile.value : "N/A",
+          iconColor: Colors.green,
+          bgColor: Colors.green.withOpacity(0.1),
+        ),
+        infoRow(
+          Icons.email_outlined,
+          "Email Address",
+          controller.email.value.isNotEmpty ? controller.email.value : "N/A",
+          iconColor: Colors.blue,
+          bgColor: Colors.blue.withOpacity(0.1),
+        ),
+        infoRow(
+          Icons.location_on,
+          "Restaurant Address",
+          controller.address.value.isNotEmpty
+              ? controller.address.value
+              : ([
+                  if (controller.street.value.isNotEmpty) controller.street.value,
+                  if (controller.city.value.isNotEmpty) controller.city.value,
+                  if (controller.pincode.value.isNotEmpty) controller.pincode.value,
+                ].join(", ").isNotEmpty
+                  ? [
+                      if (controller.street.value.isNotEmpty) controller.street.value,
+                      if (controller.city.value.isNotEmpty) controller.city.value,
+                      if (controller.pincode.value.isNotEmpty) controller.pincode.value,
+                    ].join(", ")
+                  : "N/A"),
+          iconColor: Colors.red,
+          bgColor: Colors.red.withOpacity(0.1),
+        ),
       ],
     ),
   );
@@ -59,11 +93,13 @@ Widget infoCard({
           children: [
             icon is IconData ? Icon(icon, color: iconColor) : icon as Widget,
             const SizedBox(width: 10),
-            Text(
-              title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
             ),
           ],
@@ -108,9 +144,7 @@ Widget infoRow(
                     : icon as Widget,
               ),
             ),
-
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +167,6 @@ Widget infoRow(
                 ],
               ),
             ),
-
             if (showArrow)
               const Icon(
                 Icons.chevron_right,
@@ -141,7 +174,6 @@ Widget infoRow(
               ),
           ],
         ),
-
         const Divider(height: 24),
       ],
     ),

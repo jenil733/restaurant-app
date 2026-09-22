@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:restaurant_app/src/core/const/app_color.dart';
+import 'package:restaurant_app/src/presentation/controller/settings_controller.dart';
+import 'package:restaurant_app/src/presentation/view/auth/widgets/logout_dialog.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final SettingsController controller = Get.isRegistered<SettingsController>()
+        ? Get.find<SettingsController>()
+        : Get.put(SettingsController());
+
     return Scaffold(
       backgroundColor: const Color(0xffF8F8F8),
-
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -27,7 +33,7 @@ class SettingsScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(.05),
+                            color: Colors.black.withValues(alpha: .05),
                             blurRadius: 10,
                           )
                         ],
@@ -39,9 +45,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 18),
-
                   const Text(
                     "Settings",
                     style: TextStyle(
@@ -60,7 +64,7 @@ class SettingsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(.05),
+                      color: Colors.black.withValues(alpha: .05),
                       blurRadius: 10,
                     )
                   ],
@@ -68,7 +72,6 @@ class SettingsScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 16),
-
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
@@ -86,9 +89,7 @@ class SettingsScreen extends StatelessWidget {
                               size: 20,
                             ),
                           ),
-
                           const SizedBox(width: 12),
-
                           const Text(
                             "General",
                             style: TextStyle(
@@ -99,17 +100,40 @@ class SettingsScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 12),
 
-                    _item(
-                      icon: Icons.notifications,
-                      color: Colors.teal,
-                      title: "Notifications",
-                      trailing: const Text(
-                        "ON",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                    // Notifications Item with interactive Switch
+                    Obx(
+                      () => _item(
+                        icon: Icons.notifications,
+                        color: Colors.teal,
+                        title: "Notifications",
+                        onTap: () {
+                          controller.toggleNotifications(!controller.notificationsEnabled.value);
+                        },
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (controller.isUpdating.value)
+                              const Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                            Switch.adaptive(
+                              value: controller.notificationsEnabled.value,
+                              activeColor: AppColors.primary,
+                              onChanged: controller.isUpdating.value
+                                  ? null
+                                  : (value) => controller.toggleNotifications(value),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -124,6 +148,7 @@ class SettingsScreen extends StatelessWidget {
                         "v1.0.0",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
+                          color: Colors.grey,
                         ),
                       ),
                     ),
@@ -134,6 +159,9 @@ class SettingsScreen extends StatelessWidget {
                       icon: Icons.lock,
                       color: Colors.orange,
                       title: "Change Password",
+                      onTap: () {
+                        // Optional change password flow
+                      },
                     ),
 
                     _divider(),
@@ -143,6 +171,7 @@ class SettingsScreen extends StatelessWidget {
                       color: Colors.red,
                       title: "Logout",
                       textColor: Colors.red,
+                      onTap: () => showLogoutDialog(context),
                     ),
                   ],
                 ),
@@ -169,9 +198,10 @@ class SettingsScreen extends StatelessWidget {
     required String title,
     Color textColor = const Color(0xff2B3142),
     Widget? trailing,
+    VoidCallback? onTap,
   }) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 16,
@@ -183,7 +213,7 @@ class SettingsScreen extends StatelessWidget {
               height: 30,
               width: 30,
               decoration: BoxDecoration(
-                color: color.withOpacity(.15),
+                color: color.withValues(alpha: .15),
                 borderRadius: BorderRadius.circular(7),
               ),
               child: Icon(
@@ -192,9 +222,7 @@ class SettingsScreen extends StatelessWidget {
                 size: 18,
               ),
             ),
-
             const SizedBox(width: 14),
-
             Expanded(
               child: Text(
                 title,
@@ -205,7 +233,6 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             trailing ??
                 const Icon(
                   Icons.chevron_right,

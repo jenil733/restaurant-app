@@ -13,39 +13,51 @@ class OverviewCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeController = Get.isRegistered<HomeController>()
+        ? Get.find<HomeController>()
+        : null;
+
     return Row(
       children: [
         Expanded(
-          child: _OverviewCard(
-            title: 'Orders',
-            value: '200',
-            icon: boxIcon,
-            iconBackground: const Color(0xFFFFF0E7),
-            iconColor: AppColors.primary,
-            onViewTap: () {
-              if (Get.isRegistered<HomeController>()) {
-                Get.find<HomeController>().changeTab(1);
-              } else {
-                Get.to(() => OrdersScreen());
-              }
-            },
+          child: Obx(
+            () => _OverviewCard(
+              title: 'Orders',
+              value: homeController != null
+                  ? '${homeController.totalOrders.value}'
+                  : '200',
+              icon: boxIcon,
+              iconBackground: const Color(0xFFFFF0E7),
+              iconColor: AppColors.primary,
+              onViewTap: () {
+                if (Get.isRegistered<HomeController>()) {
+                  Get.find<HomeController>().changeTab(1);
+                } else {
+                  Get.to(() => OrdersScreen());
+                }
+              },
+            ),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _OverviewCard(
-            title: 'Product',
-            value: '200',
-            icon: addImageIcon,
-            iconBackground: const Color(0xFFE8FBEF),
-            iconColor: AppColors.green,
-            onViewTap: () {
-              if (Get.isRegistered<HomeController>()) {
-                Get.find<HomeController>().changeTab(2);
-              } else {
-                Get.to(() => const ProductListScreen());
-              }
-            },
+          child: Obx(
+            () => _OverviewCard(
+              title: 'Product',
+              value: homeController != null
+                  ? '${homeController.totalProducts.value}'
+                  : '200',
+              icon: addImageIcon,
+              iconBackground: const Color(0xFFE8FBEF),
+              iconColor: AppColors.green,
+              onViewTap: () {
+                if (Get.isRegistered<HomeController>()) {
+                  Get.find<HomeController>().changeTab(2);
+                } else {
+                  Get.to(() => const ProductListScreen());
+                }
+              },
+            ),
           ),
         ),
       ],

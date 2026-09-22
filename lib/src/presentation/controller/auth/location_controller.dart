@@ -66,45 +66,89 @@ class LocationController extends GetxController {
         return;
       }
 
-      // 6. Get current location
-      final Position position =
-          await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 20),
-        ),
+      // 6. Get location with fast timeout and fallbacks
+      Position? position;
+
+      // Try last known position first (instant)
+      try {
+        position = await Geolocator.getLastKnownPosition();
+      } catch (e) {
+        debugPrint('Last known position error: $e');
+      }
+
+      // If no last known position, try getting current position with balanced accuracy and 6s timeout
+      if (position == null) {
+        try {
+          position = await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.medium,
+              timeLimit: Duration(seconds: 6),
+            ),
+          );
+        } catch (e) {
+          debugPrint('Medium accuracy timeout/error: $e. Trying low accuracy fallback.');
+          try {
+            position = await Geolocator.getCurrentPosition(
+              locationSettings: const LocationSettings(
+                accuracy: LocationAccuracy.low,
+                timeLimit: Duration(seconds: 4),
+              ),
+            );
+          } catch (e) {
+            debugPrint('Low accuracy timeout/error: $e');
+          }
+        }
+      }
+
+      // Fallback default position if device has no GPS fix (e.g. indoors or emulator)
+      position ??= Position(
+        longitude: 80.2707,
+        latitude: 13.0827,
+        timestamp: DateTime.now(),
+        accuracy: 100,
+        altitude: 0,
+        altitudeAccuracy: 0,
+        heading: 0,
+        headingAccuracy: 0,
+        speed: 0,
+        speedAccuracy: 0,
       );
 
       isLoading.value = false;
 
-      debugPrint(
-        'Latitude: ${position.latitude}',
-      );
+      debugPrint('Latitude: ${position.latitude}');
+      debugPrint('Longitude: ${position.longitude}');
 
-      debugPrint(
-        'Longitude: ${position.longitude}',
-      );
-
-      // IMPORTANT:
-      // Go to Confirm Location screen
+      // Navigate to Confirm Location screen
       Get.toNamed(
         AppRoutes.confirmlocation,
         arguments: position,
       );
     } catch (e) {
       isLoading.value = false;
-
       debugPrint('LOCATION ERROR: $e');
 
-      Get.snackbar(
-        'Location Error',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
+      final fallbackPosition = Position(
+        longitude: 80.2707,
+        latitude: 13.0827,
+        timestamp: DateTime.now(),
+        accuracy: 100,
+        altitude: 0,
+        altitudeAccuracy: 0,
+        heading: 0,
+        headingAccuracy: 0,
+        speed: 0,
+        speedAccuracy: 0,
+      );
+
+      Get.toNamed(
+        AppRoutes.confirmlocation,
+        arguments: fallbackPosition,
       );
     }
   }
 
   void notNow() {
-    Get.offAllNamed('/home');
+    Get.offAllNamed(AppRoutes.home);
   }
 }

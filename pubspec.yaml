@@ -36,13 +36,16 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.2.3
   get: ^4.7.3
-  get_x: ^5.0.0
   google_fonts: ^8.2.0
   dotted_border: ^2.1.0
   shared_preferences: ^2.5.5
   lottie: ^3.3.3
   geolocator: ^14.0.2
   geocoding: ^4.0.0
+  http: ^1.6.0
+  image_picker: ^1.2.3
+  dio: ^5.11.1
+  get_it: ^9.2.1
 
 dev_dependencies:
   flutter_test:

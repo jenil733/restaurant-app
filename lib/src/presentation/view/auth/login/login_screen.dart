@@ -77,11 +77,14 @@ class LoginScreen extends GetView<LoginController> {
                       ),
                     ),
                     const Spacer(),
-                    AppButton(
-                      text: 'Login',
-                      style: TextHelper.button,
-                      width: double.infinity,
-                      onPressed: controller.login,
+                    Obx(
+                      () => AppButton(
+                        text: 'Login',
+                        isLoading: controller.isLoading.value,
+                        style: TextHelper.button,
+                        width: double.infinity,
+                        onPressed: controller.login,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Center(

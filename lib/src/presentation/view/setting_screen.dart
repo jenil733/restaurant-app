@@ -153,16 +153,16 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
 
-                    _divider(),
+                    // _divider(),
 
-                    _item(
-                      icon: Icons.lock,
-                      color: Colors.orange,
-                      title: "Change Password",
-                      onTap: () {
-                        // Optional change password flow
-                      },
-                    ),
+                    // _item(
+                    //   icon: Icons.lock,
+                    //   color: Colors.orange,
+                    //   title: "Change Password",
+                    //   onTap: () {
+                    //     // Optional change password flow
+                    //   },
+                    // ),
 
                     _divider(),
 

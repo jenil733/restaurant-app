@@ -22,6 +22,8 @@ import 'package:restaurant_app/src/presentation/view/onboarding screen/onboardin
 import 'package:restaurant_app/src/presentation/view/products/add_product_screen.dart';
 import 'package:restaurant_app/src/presentation/view/products/edit_product_screen.dart';
 import 'package:restaurant_app/src/presentation/view/products/product_screen.dart';
+import 'package:restaurant_app/src/presentation/controller/notification_controller.dart';
+import 'package:restaurant_app/src/presentation/view/notification/notification_screen.dart';
 import 'package:restaurant_app/src/presentation/view/splash screen/splash_screen.dart';
 
 class AppRoutes {
@@ -82,7 +84,11 @@ class AppRoutes {
       page: () => ConfirmLocationScreen(),
       binding: BindingsBuilder.put(LocationConfirmController.new),
     ),
-   
+    GetPage(
+      name: notification,
+      page: () => const NotificationScreen(),
+      binding: BindingsBuilder.put(NotificationController.new),
+    ),
     GetPage(
       name: home,
       page: () => HomeScreen(),

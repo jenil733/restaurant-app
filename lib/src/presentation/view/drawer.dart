@@ -13,6 +13,7 @@ import 'package:restaurant_app/src/presentation/view/products/product_screen.dar
 import 'package:restaurant_app/src/presentation/view/products/category_screen.dart';
 import 'package:restaurant_app/src/presentation/view/profile/profile_screen.dart' as profile_view;
 import 'package:restaurant_app/src/presentation/view/profile/bank_detail_screen.dart';
+import 'package:restaurant_app/src/presentation/view/notification/notification_screen.dart';
 import 'package:restaurant_app/src/presentation/view/sales/sales_screen.dart';
 import 'package:restaurant_app/src/presentation/view/setting_screen.dart';
 
@@ -253,6 +254,14 @@ class CustomDrawer extends StatelessWidget {
                     onTap: () {
                       Get.back(); // Close the drawer first
                       Get.to(() => SettingsScreen());
+                    },
+                  ),
+                  drawerItem(
+                    Icons.notifications_outlined,
+                    "Notifications",
+                    onTap: () {
+                      Get.back();
+                      Get.to(() => const NotificationScreen());
                     },
                   ),
                   drawerItem(

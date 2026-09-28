@@ -46,6 +46,28 @@ class DocumentRepositoryImpl implements DocumentRepository {
         if (data['message'] != null) {
           message = data['message'].toString();
         }
+        if (data['errors'] is Map) {
+          final errors = data['errors'] as Map;
+          final List<String> extracted = [];
+          errors.forEach((key, val) {
+            if (val is List && val.isNotEmpty) {
+              extracted.add(val.first.toString());
+            } else if (val is Map) {
+              val.forEach((k, v) {
+                if (v is Map && v['message'] != null) {
+                  extracted.add(v['message'].toString());
+                } else if (v is String) {
+                  extracted.add(v);
+                }
+              });
+            } else if (val is String) {
+              extracted.add(val);
+            }
+          });
+          if (extracted.isNotEmpty) {
+            message = extracted.join('\n');
+          }
+        }
       }
       throw ServerFailure(message: message);
     } catch (e) {

@@ -45,7 +45,7 @@ class AppFormField extends StatelessWidget {
         Text.rich(
           TextSpan(
             text: label,
-            style: TextHelper.heading2,
+            style: TextHelper.heading2.copyWith(fontSize: 15),
             children: [
               if (isRequired)
                 TextSpan(
@@ -74,7 +74,7 @@ class AppFormField extends StatelessWidget {
             prefixText: prefixText,
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
-            prefixStyle: TextHelper.heading2.copyWith(fontSize: 12),
+            prefixStyle: TextHelper.heading2.copyWith(fontSize: 10),
             hintStyle: TextHelper.heading2.copyWith(
               color: AppColors.textprimary.withValues(alpha: 0.3),
             ),

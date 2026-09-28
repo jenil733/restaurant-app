@@ -11,6 +11,7 @@ class AppColors {
   static const Color green = Color(0xFF34C759);
   static const Color button2 = Color(0xFF0088FF);
   static const Color sidemenu = Color(0xFF22348D);
+  static const Color title = Color(0xFF0F0E0E);
   static const Color textprimary = Color(0xFF1F2937);
   static const Color textPrimary = Color(0xFF1F2937);
   static const Color border = Color(0xCC426B4D);

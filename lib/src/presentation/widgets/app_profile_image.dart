@@ -34,10 +34,8 @@ class _AppProfileImageState extends State<AppProfileImage> {
     return Container(
       width: widget.size,
       height: widget.size,
-      decoration: BoxDecoration(
-        color: AppColors.white,
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
       ),
       clipBehavior: Clip.antiAlias,
       child: FutureBuilder<Uint8List>(

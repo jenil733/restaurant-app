@@ -295,7 +295,7 @@ class _RegisterStep extends StatelessWidget {
                           width: 110,
                           height: 110,
                           decoration: BoxDecoration(
-                            color: AppColors.white,
+                            color: Colors.transparent,
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: AppColors.primary.withValues(alpha: 0.12),
@@ -305,7 +305,10 @@ class _RegisterStep extends StatelessWidget {
                           child: Image.file(File(imagePath), fit: BoxFit.cover),
                         );
                       }
-                      return const AppProfileImage(size: 110);
+                      return const AppProfileImage(
+                        size: 110,
+                        
+                      );
                     }),
                     Positioned(
                       right: 0,
@@ -541,7 +544,7 @@ class _RestaurantTypeFieldState extends State<_RestaurantTypeField> {
         Text.rich(
           TextSpan(
             text: 'Restaurant Type',
-            style: TextHelper.heading2,
+            style: TextHelper.heading2.copyWith(fontSize: 15),
             children: [
               TextSpan(
                 text: ' *',
@@ -937,8 +940,8 @@ class _DocumentDetailsStep extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         AppFormField(
-          label: 'GSTIN (Optional)',
-          isRequired: false,
+          label: 'GSTIN',
+          isRequired: !isReuploadMode || isGstRej,
           controller: controller.gstController,
           hintText: '15-character GSTIN',
           textCapitalization: TextCapitalization.characters,
@@ -950,7 +953,7 @@ class _DocumentDetailsStep extends StatelessWidget {
         const SizedBox(height: 8),
         _DocumentUploadTile(
           label: 'GST Certificate',
-          isRequired: false,
+          isRequired: !isReuploadMode || isGstRej,
           controller: controller,
           isReuploadMode: isReuploadMode,
           isRejected: isGstRej,
@@ -1118,13 +1121,15 @@ class _DocumentUploadTile extends StatelessWidget {
         Obx(() {
           final isSelected = controller.selectedDocuments.contains(label);
           String? filePath;
-          if (label == 'FSSAI Certificate')
+          if (label == 'FSSAI Certificate') {
             filePath = controller.fssaiFilePath.value;
-          if (label == 'Aadhaar Card')
+          } else if (label == 'Aadhaar Card') {
             filePath = controller.aadharFilePath.value;
-          if (label == 'PAN Card') filePath = controller.panFilePath.value;
-          if (label == 'GST Certificate')
+          } else if (label == 'PAN Card') {
+            filePath = controller.panFilePath.value;
+          } else if (label == 'GST Certificate') {
             filePath = controller.gstFilePath.value;
+          }
 
           // In reupload mode, non-rejected documents show as uploaded by default
           final isAlreadyUploaded =

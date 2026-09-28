@@ -10,12 +10,12 @@ bool isRestaurantApproved() {
     if (homeCtrl.isApproved.value) return true;
   }
   if (Get.isRegistered<ProfileController>()) {
-    final p = Get.find<ProfileController>().profile.value;
-    if (p != null) {
-      final st = (p.status ?? p.businessStatus)?.toString().toLowerCase().trim();
-      if (st == 'approved' || st == 'active' || st == '1' || st == 'true') {
-        return true;
-      }
+    final profileCtrl = Get.find<ProfileController>();
+    final p = profileCtrl.profile.value;
+    final bStatus = profileCtrl.businessStatus.value;
+    final st = (p?.status ?? p?.businessStatus ?? p?.restaurantStatus ?? bStatus)?.toString().toLowerCase().trim();
+    if (st == 'approved' || st == 'active' || st == '1' || st == 'true' || st == 'verified' || st == 'enable') {
+      return true;
     }
   }
   return false;

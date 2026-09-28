@@ -189,7 +189,10 @@ class _LogoMoment extends StatelessWidget {
       child: Opacity(
         opacity: fade,
         child: Transform.translate(
-          offset: Offset(0, 18 * (1 - Curves.easeOutCubic.transform(reveal))),
+          offset: Offset(
+            0,
+            -30 + 18 * (1 - Curves.easeOutCubic.transform(reveal)),
+          ),
           child: Transform.scale(
             scale: scale + pulse,
             child: SizedBox(
@@ -199,28 +202,6 @@ class _LogoMoment extends StatelessWidget {
                 alignment: Alignment.center,
                 clipBehavior: Clip.none,
                 children: [
-                  Container(
-                    width: logoWidth * 1.30,
-                    height: logoWidth * 1.30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFFF3FFEC),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: fade * 0.035),
-                          blurRadius: 16,
-                          offset: const Offset(0, 4),
-                        ),
-                        BoxShadow(
-                          color: const Color(
-                            0xFF73E65C,
-                          ).withValues(alpha: glow * 0.11),
-                          blurRadius: 42 * glow,
-                          spreadRadius: 4 * glow,
-                        ),
-                      ],
-                    ),
-                  ),
                   Lottie.asset(
                     kayalSplashLottie,
                     width: logoWidth * 2.25,
@@ -237,7 +218,7 @@ class _LogoMoment extends StatelessWidget {
                     painter: _EnergyPainter(
                       // The linked Lottie now supplies the exact concentric
                       // ring motion; this painter only retains Kayal's delivery
-                      // trail and final halo.
+                      // trail and final glow.
                       ringProgress: 0,
                       effectsOpacity: 0,
                       trailProgress: energy,
@@ -284,23 +265,6 @@ class _EnergyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
     final radius = size.shortestSide * 0.46;
-
-    // The final halo is a low-opacity radial wash, not a solid disc, so the
-    // supplied logo colours remain optically unchanged.
-    canvas.drawCircle(
-      center,
-      radius * 1.10,
-      Paint()
-        ..shader = ui.Gradient.radial(
-          center,
-          radius * 1.10,
-          [
-            const Color(0xFF8CF16C).withValues(alpha: glowProgress * 0.12),
-            const Color(0x008CF16C),
-          ],
-          const [0.18, 1],
-        ),
-    );
 
     final ringOpacity = effectsOpacity * (0.35 + ringProgress * 0.65);
     final ringPaint = Paint()

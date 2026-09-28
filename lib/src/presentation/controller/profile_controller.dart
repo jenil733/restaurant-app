@@ -87,12 +87,21 @@ class ProfileController extends GetxController {
         city.value = data.city ?? "";
         street.value = data.street ?? "";
         pincode.value = data.pincode ?? "";
-        if (data.id != null && data.id.toString().trim().isNotEmpty && data.id.toString() != 'null') {
+        if (data.restaurantCode != null &&
+            data.restaurantCode!.trim().isNotEmpty &&
+            data.restaurantCode != 'null') {
+          restaurantId.value = data.restaurantCode!.trim();
+          LocalStorageService().saveString('restaurant_id', restaurantId.value);
+        } else if (data.id != null &&
+            data.id.toString().trim().isNotEmpty &&
+            data.id.toString() != 'null') {
           restaurantId.value = data.id.toString().trim();
           LocalStorageService().saveString('restaurant_id', restaurantId.value);
         } else {
           final savedId = LocalStorageService().getString('restaurant_id');
-          if (savedId != null && savedId.trim().isNotEmpty && savedId.trim() != 'null') {
+          if (savedId != null &&
+              savedId.trim().isNotEmpty &&
+              savedId.trim() != 'null') {
             restaurantId.value = savedId.trim();
           } else {
             final token = LocalStorageService().getString('auth_token');
@@ -106,7 +115,8 @@ class ProfileController extends GetxController {
         }
         startTime.value = data.startTime ?? "";
         endTime.value = data.endTime ?? "";
-        if ((data.startTime != null && data.startTime!.isNotEmpty) || (data.endTime != null && data.endTime!.isNotEmpty)) {
+        if ((data.startTime != null && data.startTime!.isNotEmpty) ||
+            (data.endTime != null && data.endTime!.isNotEmpty)) {
           final start = data.startTime ?? "";
           final end = data.endTime ?? "";
           if (start.isNotEmpty && end.isNotEmpty) {
@@ -130,7 +140,8 @@ class ProfileController extends GetxController {
         businessStatus.value = data.businessStatus ?? "";
 
         // If dashboard already verified approval, sync it across profile
-        if (Get.isRegistered<HomeController>() && Get.find<HomeController>().isApproved.value) {
+        if (Get.isRegistered<HomeController>() &&
+            Get.find<HomeController>().isApproved.value) {
           isActive.value = true;
           if (businessStatus.value.isEmpty ||
               businessStatus.value.toLowerCase() == 'rejected' ||
@@ -145,6 +156,11 @@ class ProfileController extends GetxController {
         ifsc.value = data.ifsc ?? "";
         branch.value = data.branch ?? "";
         upiId.value = data.upiId ?? "";
+
+        // Sync with HomeController
+        if (Get.isRegistered<HomeController>()) {
+          Get.find<HomeController>().syncWithProfile();
+        }
       }
     } catch (e) {
       errorMessage.value = e.toString();
@@ -162,7 +178,8 @@ class ProfileController extends GetxController {
         if (response.profile != null) {
           final data = response.profile!;
           profile.value = data;
-          if (data.restaurantName != null) restaurantName.value = data.restaurantName!;
+          if (data.restaurantName != null)
+            restaurantName.value = data.restaurantName!;
           if (data.ownerName != null) ownerName.value = data.ownerName!;
           if (data.phone != null) mobile.value = data.phone!;
           if (data.email != null) email.value = data.email!;
@@ -173,12 +190,14 @@ class ProfileController extends GetxController {
           if (data.startTime != null) startTime.value = data.startTime!;
           if (data.endTime != null) endTime.value = data.endTime!;
           if (data.startTime != null || data.endTime != null) {
-            storeTiming.value = "${data.startTime ?? startTime.value} - ${data.endTime ?? endTime.value}";
+            storeTiming.value =
+                "${data.startTime ?? startTime.value} - ${data.endTime ?? endTime.value}";
           }
           if (data.foodType != null) foodType.value = data.foodType!;
           if (data.image != null) profileImage.value = data.image!;
         } else {
-          if (request.restaurantName != null) restaurantName.value = request.restaurantName!;
+          if (request.restaurantName != null)
+            restaurantName.value = request.restaurantName!;
           if (request.ownerName != null) ownerName.value = request.ownerName!;
           if (request.email != null) email.value = request.email!;
           if (request.phone != null) mobile.value = request.phone!;
@@ -198,13 +217,19 @@ class ProfileController extends GetxController {
 
         AppNotification.showSuccess(
           title: "Profile Updated",
-          message: response.message.isNotEmpty ? response.message : "Profile updated successfully.",
+          message: response.message.isNotEmpty
+              ? response.message
+              : "Profile updated successfully.",
         );
         return true;
       }
     } catch (e) {
       debugPrint("Error updating profile: $e");
-      final err = e.toString().replaceAll("Exception:", "").replaceAll("ServerFailure:", "").trim();
+      final err = e
+          .toString()
+          .replaceAll("Exception:", "")
+          .replaceAll("ServerFailure:", "")
+          .trim();
       AppNotification.showError(
         title: "Update Failed",
         message: err.isNotEmpty ? err : "Could not update profile.",

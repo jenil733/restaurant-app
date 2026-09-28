@@ -33,40 +33,40 @@ class UploadDocumentRequestModel {
   Future<FormData> toFormData() async {
     final Map<String, dynamic> map = {};
 
-    if (documentType != null && documentType!.isNotEmpty) {
-      map['document_type'] = documentType;
-      map['doc_type'] = documentType;
-      map['type'] = documentType;
+    // 1. Text Fields (Identity Details / Numbers)
+    if (fssaiNumber != null && fssaiNumber!.trim().isNotEmpty) {
+      map['license_no'] = fssaiNumber!.trim();
+      map['fssai_number'] = fssaiNumber!.trim();
+      map['fssai_no'] = fssaiNumber!.trim();
     }
-    if (documentNumber != null && documentNumber!.isNotEmpty) {
-      map['document_number'] = documentNumber;
-      map['doc_number'] = documentNumber;
-      map['number'] = documentNumber;
+    if (aadhaarNumber != null && aadhaarNumber!.trim().isNotEmpty) {
+      map['aadhar'] = aadhaarNumber!.trim();
+      map['aadhaar'] = aadhaarNumber!.trim();
+      map['aadhar_number'] = aadhaarNumber!.trim();
+      map['aadhaar_number'] = aadhaarNumber!.trim();
     }
-
-    if (fssaiNumber != null && fssaiNumber!.isNotEmpty) {
-      map['license_no'] = fssaiNumber;
-      map['fssai_number'] = fssaiNumber;
-      map['fssai_no'] = fssaiNumber;
+    if (panNumber != null && panNumber!.trim().isNotEmpty) {
+      map['pan_no'] = panNumber!.trim();
+      map['pan_number'] = panNumber!.trim();
     }
-    if (aadhaarNumber != null && aadhaarNumber!.isNotEmpty) {
-      map['aadhar'] = aadhaarNumber;
-      map['aadhaar'] = aadhaarNumber;
-      map['aadhar_number'] = aadhaarNumber;
-      map['aadhaar_number'] = aadhaarNumber;
-    }
-    if (panNumber != null && panNumber!.isNotEmpty) {
-      map['pan_no'] = panNumber;
-      map['pan_number'] = panNumber;
-      map['pan'] = panNumber;
-    }
-    if (gstNumber != null && gstNumber!.isNotEmpty) {
-      map['gstin'] = gstNumber;
-      map['gst_number'] = gstNumber;
-      map['gst'] = gstNumber;
+    if (gstNumber != null && gstNumber!.trim().isNotEmpty) {
+      map['gstin'] = gstNumber!.trim();
+      map['gst_number'] = gstNumber!.trim();
     }
 
-    Future<void> attachFileWithAliases(List<String> keys, String? path, [String? docType]) async {
+    if (documentType != null && documentType!.trim().isNotEmpty) {
+      map['document_type'] = documentType!.trim();
+      map['doc_type'] = documentType!.trim();
+      map['type'] = documentType!.trim();
+    }
+    if (documentNumber != null && documentNumber!.trim().isNotEmpty) {
+      map['document_number'] = documentNumber!.trim();
+      map['doc_number'] = documentNumber!.trim();
+      map['number'] = documentNumber!.trim();
+    }
+
+    // 2. File Attachments (Use ONLY file-specific keys, NEVER overwrite string fields like 'gstin', 'pan_no', 'license_no', 'aadhar')
+    Future<void> attachFile(List<String> keys, String? path, [String? docType]) async {
       if (path != null && path.trim().isNotEmpty) {
         final file = File(path.trim());
         if (file.existsSync()) {
@@ -92,13 +92,11 @@ class UploadDocumentRequestModel {
             ((gstFilePath != null && gstFilePath!.isNotEmpty) ? 1 : 0) +
             ((customFilePath != null && customFilePath!.isNotEmpty) ? 1 : 0) == 1;
 
-    // Attach Aadhaar with all possible spellings & aliases
-    await attachFileWithAliases(
+    // Attach Aadhaar file
+    await attachFile(
       [
         'aadhar_file',
         'aadhaar_file',
-        'aadhar',
-        'aadhaar',
         'aadhar_card',
         'aadhaar_card',
         'aadhar_image',
@@ -106,57 +104,52 @@ class UploadDocumentRequestModel {
         if (hasSingleFile) ...['file', 'document', 'document_file', 'doc_file'],
       ],
       aadharFilePath,
-      'aadhaar',
+      'aadhar_file',
     );
 
-    // Attach FSSAI with all possible aliases
-    await attachFileWithAliases(
+    // Attach FSSAI file
+    await attachFile(
       [
         'fssai_file',
-        'fssai',
         'fssai_cert',
         'fssai_certificate',
         'fssai_image',
         'license_file',
         'license_image',
-        'license',
         if (hasSingleFile) ...['file', 'document', 'document_file', 'doc_file'],
       ],
       fssaiFilePath,
-      'fssai',
+      'fssai_file',
     );
 
-    // Attach PAN with all possible aliases
-    await attachFileWithAliases(
+    // Attach PAN file
+    await attachFile(
       [
         'pan_file',
-        'pan',
         'pan_card',
         'pan_image',
         if (hasSingleFile) ...['file', 'document', 'document_file', 'doc_file'],
       ],
       panFilePath,
-      'pan',
+      'pan_file',
     );
 
-    // Attach GST with all possible aliases
-    await attachFileWithAliases(
+    // Attach GST file (NEVER include 'gstin' or 'gst' key here as gstin is a text field)
+    await attachFile(
       [
         'gst_file',
-        'gst',
         'gst_cert',
         'gst_certificate',
         'gstin_file',
         'gst_image',
-        'gstin',
         if (hasSingleFile) ...['file', 'document', 'document_file', 'doc_file'],
       ],
       gstFilePath,
-      'gst',
+      'gst_file',
     );
 
     if (customFileKey != null && customFilePath != null) {
-      await attachFileWithAliases(
+      await attachFile(
         [
           customFileKey!,
           if (hasSingleFile) ...['file', 'document', 'document_file'],

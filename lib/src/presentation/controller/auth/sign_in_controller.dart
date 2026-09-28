@@ -185,7 +185,7 @@ class SignInController extends GetxController {
 
   String? gstinValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return null;
+      return 'GSTIN number is required';
     }
     final clean = value.trim().toUpperCase();
     if (!RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$').hasMatch(clean)) {
@@ -374,12 +374,35 @@ class SignInController extends GetxController {
         }
       }
 
-      if (currentStep.value == 1 && selectedDocuments.length < 3) {
-        AppNotification.showError(
-          title: 'Documents required',
-          message: 'Select at least FSSAI, Aadhaar, and PAN documents to continue.',
-        );
-        return;
+      if (currentStep.value == 1) {
+        if (fssaiFilePath.value == null || fssaiFilePath.value!.trim().isEmpty) {
+          AppNotification.showError(
+            title: 'FSSAI Certificate required',
+            message: 'Please upload your FSSAI Certificate to continue.',
+          );
+          return;
+        }
+        if (aadharFilePath.value == null || aadharFilePath.value!.trim().isEmpty) {
+          AppNotification.showError(
+            title: 'Aadhaar Card required',
+            message: 'Please upload your Aadhaar Card to continue.',
+          );
+          return;
+        }
+        if (panFilePath.value == null || panFilePath.value!.trim().isEmpty) {
+          AppNotification.showError(
+            title: 'PAN Card required',
+            message: 'Please upload your PAN Card to continue.',
+          );
+          return;
+        }
+        if (gstFilePath.value == null || gstFilePath.value!.trim().isEmpty) {
+          AppNotification.showError(
+            title: 'GST Certificate required',
+            message: 'Please upload your GST Certificate to continue.',
+          );
+          return;
+        }
       }
 
       if (currentStep.value == stepCount - 1) {
@@ -593,15 +616,20 @@ class SignInController extends GetxController {
           ? sl<UploadDocumentUseCase>()
           : UploadDocumentUseCase(DocumentRepositoryImpl(ApiService()));
 
+      final hasFssai = fssaiFilePath.value != null && fssaiFilePath.value!.trim().isNotEmpty;
+      final hasAadhaar = aadharFilePath.value != null && aadharFilePath.value!.trim().isNotEmpty;
+      final hasPan = panFilePath.value != null && panFilePath.value!.trim().isNotEmpty;
+      final hasGst = gstFilePath.value != null && gstFilePath.value!.trim().isNotEmpty;
+
       final request = UploadDocumentRequestModel(
-        fssaiFilePath: fssaiFilePath.value,
-        gstFilePath: gstFilePath.value,
-        panFilePath: panFilePath.value,
-        aadharFilePath: aadharFilePath.value,
-        fssaiNumber: fssaiController.text.trim(),
-        aadhaarNumber: aadhaarController.text.trim(),
-        panNumber: panController.text.trim(),
-        gstNumber: gstController.text.trim(),
+        fssaiFilePath: hasFssai ? fssaiFilePath.value : null,
+        gstFilePath: hasGst ? gstFilePath.value : null,
+        panFilePath: hasPan ? panFilePath.value : null,
+        aadharFilePath: hasAadhaar ? aadharFilePath.value : null,
+        fssaiNumber: hasFssai && fssaiController.text.trim().isNotEmpty ? fssaiController.text.trim() : null,
+        aadhaarNumber: hasAadhaar && aadhaarController.text.trim().isNotEmpty ? aadhaarController.text.trim() : null,
+        panNumber: hasPan && panController.text.trim().isNotEmpty ? panController.text.trim() : null,
+        gstNumber: hasGst && gstController.text.trim().isNotEmpty ? gstController.text.trim() : null,
       );
 
       final response = await uploadUseCase(request);
@@ -616,12 +644,14 @@ class SignInController extends GetxController {
 
         Get.offAllNamed<void>(AppRoutes.home);
 
-        AppNotification.showSuccess(
-          title: 'Document Uploaded',
-          message: response.message.isNotEmpty
-              ? response.message
-              : 'Certificate re-uploaded successfully.',
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          AppNotification.showSuccess(
+            title: 'Document Uploaded',
+            message: response.message.isNotEmpty
+                ? response.message
+                : 'Certificate re-uploaded successfully.',
+          );
+        });
       } else {
         AppNotification.showError(
           title: 'Upload Failed',

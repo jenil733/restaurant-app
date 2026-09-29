@@ -32,8 +32,8 @@ class LoginScreen extends GetView<LoginController> {
                     Center(
                       child: Image.asset(
                         appLogo,
-                        width: 121,
-                        height: 86,
+                        width: 200,
+                        height: 95,
                       ),
                     ),
                     const SizedBox(height: 22),
@@ -49,7 +49,7 @@ class LoginScreen extends GetView<LoginController> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    Text('Phone Number', style: TextHelper.heading2),
+                    Text('Phone Number', style: TextHelper.heading2.copyWith(color: AppColors.title, fontWeight: FontWeight.w500,)),
                     const SizedBox(height: 8),
                     TextField(
                       controller: controller.phoneController,
@@ -64,7 +64,9 @@ class LoginScreen extends GetView<LoginController> {
                       decoration: InputDecoration(
                         hintText: 'Enter phone number',
                         hintStyle: TextHelper.heading2.copyWith(
+                           fontSize: 15,
                           color: AppColors.textprimary.withValues(alpha: 0.35),
+
                         ),
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 14,
@@ -95,7 +97,7 @@ class LoginScreen extends GetView<LoginController> {
                           TextSpan(
                             text: "Don't have an account? ",
                             style: TextHelper.heading2.copyWith(
-                              fontSize: 12,
+                              fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
                             children: [
@@ -103,7 +105,7 @@ class LoginScreen extends GetView<LoginController> {
                                 text: 'Sign up',
                                 style: TextHelper.heading2.copyWith(
                                   color: AppColors.primary,
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),

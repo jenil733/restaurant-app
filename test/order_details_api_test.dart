@@ -6,6 +6,7 @@ import 'package:restaurant_app/src/data/models/orders_model.dart';
 import 'package:restaurant_app/src/domain/repository/order_detail_repository.dart';
 import 'package:restaurant_app/src/domain/usecase/get_order_details_usecase.dart';
 
+
 class MockOrderDetailRepository implements OrderDetailRepository {
   bool wasCalled = false;
   dynamic lastOrderId;

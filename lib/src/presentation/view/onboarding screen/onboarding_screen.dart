@@ -92,7 +92,7 @@ class _SkipButton extends StatelessWidget {
                     'Skip',
                     style: TextStyle(
                       color: AppColors.white,
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -121,9 +121,11 @@ class _OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
-    final maxHeightBasedSize = (screenSize.height * 0.32).clamp(160.0, 332.0);
-    final maxWidthBasedSize = (screenSize.width * 0.78).clamp(160.0, 332.0);
-    final imageSize = maxHeightBasedSize < maxWidthBasedSize ? maxHeightBasedSize : maxWidthBasedSize;
+    final maxHeightBasedSize = (screenSize.height * 0.40).clamp(160.0, 332.0);
+    final maxWidthBasedSize = (screenSize.width * 0.82).clamp(160.0, 332.0);
+    final imageSize = maxHeightBasedSize < maxWidthBasedSize
+        ? maxHeightBasedSize
+        : maxWidthBasedSize;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -148,7 +150,7 @@ class _OnboardingPage extends StatelessWidget {
           Text(
             data.description,
             textAlign: TextAlign.center,
-            style: TextHelper.heading2,
+            style: TextHelper.heading2.copyWith(height: 1.8),
           ),
           const Spacer(flex: 2),
         ],
@@ -197,7 +199,7 @@ class _NavigationButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => Padding(
-        padding: const EdgeInsets.fromLTRB(32, 8, 24, 35),
+        padding: const EdgeInsets.fromLTRB(60, 8, 24, 35),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -211,7 +213,7 @@ class _NavigationButtons extends StatelessWidget {
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     textStyle: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -219,7 +221,12 @@ class _NavigationButtons extends StatelessWidget {
                 ),
               ),
             ),
-            AppButton(text: 'Next', onPressed: controller.nextPage),
+            AppButton(
+              text: 'Next',
+              width: 165,
+              fontSize: 18,
+              onPressed: controller.nextPage,
+            ),
           ],
         ),
       ),

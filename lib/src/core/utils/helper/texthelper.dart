@@ -13,7 +13,7 @@ class TextHelper {
 
   static TextStyle get login {
     return GoogleFonts.poppins(
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: FontWeight.w500,
       color: AppColors.textprimary,
     );
@@ -21,7 +21,7 @@ class TextHelper {
 
   static TextStyle get heading3 {
     return GoogleFonts.poppins(
-      fontSize: 20,
+      fontSize: 22,
       fontWeight: FontWeight.w700,
       color: AppColors.textprimary,
     );
@@ -29,7 +29,7 @@ class TextHelper {
 
   static TextStyle get heading2 {
     return GoogleFonts.poppins(
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: FontWeight.w400,
       color: AppColors.textprimary,
     );

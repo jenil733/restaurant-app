@@ -3,11 +3,7 @@ class DashboardResponseModel {
   final String? message;
   final DashboardDataModel? data;
 
-  DashboardResponseModel({
-    required this.success,
-    this.message,
-    this.data,
-  });
+  DashboardResponseModel({required this.success, this.message, this.data});
 
   factory DashboardResponseModel.fromJson(Map<String, dynamic> json) {
     bool isSuccess = false;
@@ -116,9 +112,7 @@ class DashboardDataModel {
     );
 
     final pendingOrdersVal = parseInt(
-      json['pending_orders'] ??
-          json['pending_orders_count'] ??
-          json['pending'],
+      json['pending_orders'] ?? json['pending_orders_count'] ?? json['pending'],
     );
 
     final completedOrdersVal = parseInt(
@@ -145,53 +139,112 @@ class DashboardDataModel {
     }
 
     bool? parseApproved(Map<String, dynamic> json) {
-      final val = json['is_approved'] ??
-          json['approved'] ??
+      final isAppr = json['is_approved'] ?? json['approved'];
+      if (isAppr != null) {
+        if (isAppr is bool) return isAppr;
+        if (isAppr is num) return isAppr == 1;
+        if (isAppr is String) {
+          final s = isAppr.toLowerCase().trim();
+          if (s == '1' || s == 'true' || s == 'approved' || s == 'verified')
+            return true;
+          if (s == '0' ||
+              s == 'false' ||
+              s == 'pending' ||
+              s == 'rejected' ||
+              s == 'declined')
+            return false;
+        }
+      }
+
+      final statusVal =
           json['verification_status'] ??
           json['restaurant_status'] ??
-          json['status'] ??
-          json['is_active'];
-      if (val == null) return null;
-      if (val is bool) return val;
-      if (val is num) return val == 1 || val == 200;
-      if (val is String) {
-        final s = val.toLowerCase().trim();
-        if (s == 'approved' || s == 'active' || s == 'true' || s == '1' || s == 'enable') return true;
-        if (s == 'pending' || s == 'in_progress' || s == '0' || s == 'false' || s == 'rejected' || s == 'inactive') return false;
+          json['Restaurant_status'] ??
+          json['business_status'];
+      if (statusVal != null) {
+        final s = statusVal.toString().toLowerCase().trim();
+        if (s == 'approved' || s == 'verified') return true;
+        if (s == 'pending' ||
+            s == 'waiting' ||
+            s == 'waiting_for_approval' ||
+            s == 'under_review' ||
+            s == 'in_progress' ||
+            s == 'rejected' ||
+            s == 'declined' ||
+            s == '0')
+          return false;
       }
+
+      final st = json['status'];
+      if (st != null && st is String) {
+        final s = st.toLowerCase().trim();
+        if (s == 'approved' || s == 'verified') return true;
+        if (s == 'pending' ||
+            s == 'waiting' ||
+            s == 'waiting_for_approval' ||
+            s == 'under_review' ||
+            s == 'in_progress' ||
+            s == 'rejected' ||
+            s == 'declined' ||
+            s == '0')
+          return false;
+      }
+
       return null;
     }
 
     bool? parseRejected(Map<String, dynamic> json) {
-      final hasRejKey = json.containsKey('is_rejected') || json.containsKey('rejected');
-      final val = json['is_rejected'] ??
-          json['rejected'] ??
+      final isRej = json['is_rejected'] ?? json['rejected'];
+      if (isRej != null) {
+        if (isRej is bool) return isRej;
+        if (isRej is num) return isRej == 1 || isRej == 2;
+        if (isRej is String) {
+          final s = isRej.toLowerCase().trim();
+          if (s == '1' ||
+              s == '2' ||
+              s == 'true' ||
+              s == 'rejected' ||
+              s == 'declined')
+            return true;
+          if (s == '0' || s == 'false' || s == 'approved' || s == 'pending')
+            return false;
+        }
+      }
+
+      final statusVal =
           json['verification_status'] ??
-          json['status'];
-      if (val == null) return null;
-      if (val is bool) return val;
-      if (val is num) {
-        if (hasRejKey) return val == 1 || val == 2;
-        return val == 2;
+          json['restaurant_status'] ??
+          json['Restaurant_status'] ??
+          json['business_status'];
+      if (statusVal != null) {
+        final s = statusVal.toString().toLowerCase().trim();
+        if (s == 'rejected' || s == 'declined' || s == '2') return true;
+        if (s == 'approved' ||
+            s == 'pending' ||
+            s == 'waiting' ||
+            s == 'under_review' ||
+            s == '0' ||
+            s == '1')
+          return false;
       }
-      if (val is String) {
-        final s = val.toLowerCase().trim();
-        if (s == 'rejected' || s == 'true' || s == '2' || (hasRejKey && s == '1')) return true;
-        if (s == 'approved' || s == 'active' || s == 'pending' || s == 'false' || s == '0') return false;
-      }
+
       return null;
     }
 
-    final singleDoc = (json['rejected_document'] ??
-            json['rejected_doc'] ??
-            json['rejected_document_name'] ??
-            json['document_name'] ??
-            json['document_type'] ??
-            json['doc_type'])
-        ?.toString();
+    final singleDoc =
+        (json['rejected_document'] ??
+                json['rejected_doc'] ??
+                json['rejected_document_name'] ??
+                json['document_name'] ??
+                json['document_type'] ??
+                json['doc_type'])
+            ?.toString();
 
     final List<String> rejectedList = [];
-    final rawDocs = json['rejected_documents'] ?? json['rejected_docs'] ?? json['rejected_doc_list'];
+    final rawDocs =
+        json['rejected_documents'] ??
+        json['rejected_docs'] ??
+        json['rejected_doc_list'];
     if (rawDocs is List) {
       for (var item in rawDocs) {
         if (item != null && item.toString().trim().isNotEmpty) {
@@ -219,14 +272,19 @@ class DashboardDataModel {
       totalEarnings: totalEarningsVal,
       isApproved: parseApproved(json),
       isRejected: parseRejected(json),
-      rejectionReason: (json['rejection_reason'] ?? json['reject_reason'] ?? json['reason'] ?? json['rejection_note'])?.toString(),
+      rejectionReason:
+          (json['rejection_reason'] ??
+                  json['reject_reason'] ??
+                  json['reason'] ??
+                  json['rejection_note'])
+              ?.toString(),
       rejectedDocument: singleDoc,
       rejectedDocuments: rejectedList,
       restaurantName:
           (json['restaurant_name'] ?? json['name'] ?? json['restaurant'])
               ?.toString(),
-      restaurantStatus:
-          (json['restaurant_status'] ?? json['status'])?.toString(),
+      restaurantStatus: (json['restaurant_status'] ?? json['status'])
+          ?.toString(),
       recentOrders: ordersList,
     );
   }
@@ -299,14 +357,23 @@ class DashboardOrderModel {
       id: json['id'],
       orderId: (json['order_id'] ?? json['id'] ?? '#0000').toString(),
       productName: parseProductName(
-        json['product_name'] ?? json['product'] ?? json['items'] ?? json['name'],
+        json['product_name'] ??
+            json['product'] ??
+            json['items'] ??
+            json['name'],
       ),
-      quantity: parseInt(json['qty'] ?? json['quantity'] ?? json['total_items']),
+      quantity: parseInt(
+        json['qty'] ?? json['quantity'] ?? json['total_items'],
+      ),
       status: (json['status'] ?? 'Pending').toString(),
       totalAmount: parseDouble(
-        json['total_amount'] ?? json['total'] ?? json['amount'] ?? json['price'],
+        json['total_amount'] ??
+            json['total'] ??
+            json['amount'] ??
+            json['price'],
       ),
-      createdAt: (json['created_at'] ?? json['date'] ?? json['time'])?.toString(),
+      createdAt: (json['created_at'] ?? json['date'] ?? json['time'])
+          ?.toString(),
     );
   }
 

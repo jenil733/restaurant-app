@@ -161,5 +161,51 @@ void main() {
       expect(controller.recentOrders.first.orderId, '#9999');
       expect(controller.recentOrders.first.productName, 'Mutton Chukka');
     });
+
+    test('HomeController sets waiting for approval state when status is pending / unapproved', () async {
+      final pendingData = DashboardResponseModel(
+        success: true,
+        data: DashboardDataModel(
+          totalOrders: 0,
+          totalProducts: 0,
+          isApproved: false,
+          isRejected: false,
+        ),
+      );
+
+      final fakeRepo = _FakeDashboardRepository(pendingData);
+      final useCase = GetDashboardUseCase(fakeRepo);
+      final controller = HomeController(getDashboardUseCase: useCase);
+
+      await controller.fetchDashboard();
+
+      expect(controller.isApproved.value, isFalse);
+      expect(controller.isRejected.value, isFalse);
+    });
+
+    test('HomeController sets rejection state when status is rejected', () async {
+      final rejectedData = DashboardResponseModel(
+        success: true,
+        data: DashboardDataModel(
+          totalOrders: 0,
+          totalProducts: 0,
+          isApproved: false,
+          isRejected: true,
+          rejectionReason: 'Invalid FSSAI certificate',
+          rejectedDocument: 'FSSAI License',
+        ),
+      );
+
+      final fakeRepo = _FakeDashboardRepository(rejectedData);
+      final useCase = GetDashboardUseCase(fakeRepo);
+      final controller = HomeController(getDashboardUseCase: useCase);
+
+      await controller.fetchDashboard();
+
+      expect(controller.isApproved.value, isFalse);
+      expect(controller.isRejected.value, isTrue);
+      expect(controller.rejectionReason.value, 'Invalid FSSAI certificate');
+      expect(controller.rejectedDocument.value, 'FSSAI License');
+    });
   });
 }

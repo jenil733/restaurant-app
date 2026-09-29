@@ -26,56 +26,61 @@ class HomeController extends GetxController {
     UpdateStatusUseCase? updateStatusUseCase,
     GetRecentOrdersUseCase? getRecentOrdersUseCase,
     GetDocumentsUseCase? getDocumentsUseCase,
-  })  : _getDashboardUseCase = getDashboardUseCase ??
-            (sl.isRegistered<GetDashboardUseCase>()
-                ? sl<GetDashboardUseCase>()
-                : GetDashboardUseCase(
-                    DashboardRepositoryImpl(
-                      sl.isRegistered<ApiService>()
-                          ? sl<ApiService>()
-                          : ApiService(),
-                    ),
-                  )),
-        _getBannersUseCase = getBannersUseCase ??
-            (sl.isRegistered<GetBannersUseCase>()
-                ? sl<GetBannersUseCase>()
-                : GetBannersUseCase(
-                    BannerRepositoryImpl(
-                      sl.isRegistered<ApiService>()
-                          ? sl<ApiService>()
-                          : ApiService(),
-                    ),
-                  )),
-        _updateStatusUseCase = updateStatusUseCase ??
-            (sl.isRegistered<UpdateStatusUseCase>()
-                ? sl<UpdateStatusUseCase>()
-                : UpdateStatusUseCase(
-                    StatusRepositoryImpl(
-                      sl.isRegistered<ApiService>()
-                          ? sl<ApiService>()
-                          : ApiService(),
-                    ),
-                  )),
-        _getRecentOrdersUseCase = getRecentOrdersUseCase ??
-            (sl.isRegistered<GetRecentOrdersUseCase>()
-                ? sl<GetRecentOrdersUseCase>()
-                : GetRecentOrdersUseCase(
-                    RecentOrdersRepositoryImpl(
-                      sl.isRegistered<ApiService>()
-                          ? sl<ApiService>()
-                          : ApiService(),
-                    ),
-                  )),
-        _getDocumentsUseCase = getDocumentsUseCase ??
-            (sl.isRegistered<GetDocumentsUseCase>()
-                ? sl<GetDocumentsUseCase>()
-                : GetDocumentsUseCase(
-                    DocumentRepositoryImpl(
-                      sl.isRegistered<ApiService>()
-                          ? sl<ApiService>()
-                          : ApiService(),
-                    ),
-                  ));
+  }) : _getDashboardUseCase =
+           getDashboardUseCase ??
+           (sl.isRegistered<GetDashboardUseCase>()
+               ? sl<GetDashboardUseCase>()
+               : GetDashboardUseCase(
+                   DashboardRepositoryImpl(
+                     sl.isRegistered<ApiService>()
+                         ? sl<ApiService>()
+                         : ApiService(),
+                   ),
+                 )),
+       _getBannersUseCase =
+           getBannersUseCase ??
+           (sl.isRegistered<GetBannersUseCase>()
+               ? sl<GetBannersUseCase>()
+               : GetBannersUseCase(
+                   BannerRepositoryImpl(
+                     sl.isRegistered<ApiService>()
+                         ? sl<ApiService>()
+                         : ApiService(),
+                   ),
+                 )),
+       _updateStatusUseCase =
+           updateStatusUseCase ??
+           (sl.isRegistered<UpdateStatusUseCase>()
+               ? sl<UpdateStatusUseCase>()
+               : UpdateStatusUseCase(
+                   StatusRepositoryImpl(
+                     sl.isRegistered<ApiService>()
+                         ? sl<ApiService>()
+                         : ApiService(),
+                   ),
+                 )),
+       _getRecentOrdersUseCase =
+           getRecentOrdersUseCase ??
+           (sl.isRegistered<GetRecentOrdersUseCase>()
+               ? sl<GetRecentOrdersUseCase>()
+               : GetRecentOrdersUseCase(
+                   RecentOrdersRepositoryImpl(
+                     sl.isRegistered<ApiService>()
+                         ? sl<ApiService>()
+                         : ApiService(),
+                   ),
+                 )),
+       _getDocumentsUseCase =
+           getDocumentsUseCase ??
+           (sl.isRegistered<GetDocumentsUseCase>()
+               ? sl<GetDocumentsUseCase>()
+               : GetDocumentsUseCase(
+                   DocumentRepositoryImpl(
+                     sl.isRegistered<ApiService>()
+                         ? sl<ApiService>()
+                         : ApiService(),
+                   ),
+                 ));
 
   final GetDashboardUseCase _getDashboardUseCase;
   final GetBannersUseCase _getBannersUseCase;
@@ -101,7 +106,9 @@ class HomeController extends GetxController {
   // Live Dashboard State
   final isLoadingDashboard = true.obs;
   final hasLoadedDashboard = false.obs;
-  final Rx<DashboardResponseModel?> dashboardData = Rx<DashboardResponseModel?>(null);
+  final Rx<DashboardResponseModel?> dashboardData = Rx<DashboardResponseModel?>(
+    null,
+  );
   final totalOrders = 0.obs;
   final totalProducts = 0.obs;
   final recentOrders = <DashboardOrderModel>[].obs;
@@ -124,7 +131,9 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    final reuploaded = LocalStorageService().getBool('has_reuploaded_documents');
+    final reuploaded = LocalStorageService().getBool(
+      'has_reuploaded_documents',
+    );
     if (reuploaded == true) {
       hasReuploaded.value = true;
       isRejected.value = false;
@@ -157,29 +166,60 @@ class HomeController extends GetxController {
         totalOrders.value = data.totalOrders;
         totalProducts.value = data.totalProducts;
 
-        if (data.isApproved != null) {
+        // Check profile status first to prevent get_dashboard from falsely overriding a rejected or pending restaurant
+        final profileCtrl = Get.isRegistered<ProfileController>()
+            ? Get.find<ProfileController>()
+            : null;
+        final profileStatus =
+            (profileCtrl?.profile.value?.restaurantStatus ??
+                    profileCtrl?.profile.value?.businessStatus ??
+                    profileCtrl?.businessStatus.value)
+                ?.toLowerCase()
+                .trim();
+
+        if (profileStatus == 'rejected' ||
+            profileStatus == 'declined' ||
+            profileStatus == '2') {
+          isApproved.value = false;
+          if (!hasReuploaded.value) {
+            isRejected.value = true;
+          }
+        } else if (profileStatus == 'pending' ||
+            profileStatus == 'waiting' ||
+            profileStatus == 'waiting_for_approval' ||
+            profileStatus == 'under_review' ||
+            profileStatus == 'in_progress') {
+          isApproved.value = false;
+          isRejected.value = false;
+        } else if (data.isApproved != null) {
           isApproved.value = data.isApproved!;
           if (data.isApproved == true) {
             isRejected.value = false;
             hasReuploaded.value = false;
             LocalStorageService().saveBool('has_reuploaded_documents', false);
-            if (Get.isRegistered<ProfileController>()) {
-              final profileCtrl = Get.find<ProfileController>();
+            if (profileCtrl != null) {
               profileCtrl.isActive.value = true;
               profileCtrl.businessStatus.value = "Approved";
             }
           }
         }
-        if (data.isRejected != null && !isApproved.value && !hasReuploaded.value) {
+
+        if (data.isRejected != null &&
+            !isApproved.value &&
+            !hasReuploaded.value) {
           isRejected.value = data.isRejected!;
         }
-        if (data.rejectionReason != null && data.rejectionReason!.isNotEmpty && !hasReuploaded.value) {
+        if (data.rejectionReason != null &&
+            data.rejectionReason!.isNotEmpty &&
+            !hasReuploaded.value) {
           rejectionReason.value = data.rejectionReason!;
         }
         if (data.rejectedDocuments.isNotEmpty && !hasReuploaded.value) {
           rejectedDocuments.assignAll(data.rejectedDocuments);
           rejectedDocument.value = data.rejectedDocuments.join(', ');
-        } else if (data.rejectedDocument != null && data.rejectedDocument!.isNotEmpty && !hasReuploaded.value) {
+        } else if (data.rejectedDocument != null &&
+            data.rejectedDocument!.isNotEmpty &&
+            !hasReuploaded.value) {
           rejectedDocument.value = data.rejectedDocument!;
           rejectedDocuments.assignAll([data.rejectedDocument!]);
         }
@@ -187,7 +227,7 @@ class HomeController extends GetxController {
           recentOrders.assignAll(data.recentOrders);
         }
       }
-      _syncWithProfile();
+      syncWithProfile();
 
       // If not approved and not yet reuploaded, check documents API to verify if any document has been rejected by admin
       if (!isApproved.value && !hasReuploaded.value) {
@@ -198,17 +238,22 @@ class HomeController extends GetxController {
 
           for (final doc in docsResp.documents) {
             final st = doc.status?.toLowerCase().trim();
-            final isDocRej = st == 'rejected' ||
+            final isDocRej =
+                st == 'rejected' ||
                 st == '2' ||
                 st == 'declined' ||
-                (doc.rejectionReason != null && doc.rejectionReason!.trim().isNotEmpty);
+                (doc.rejectionReason != null &&
+                    doc.rejectionReason!.trim().isNotEmpty);
 
             if (isDocRej) {
               final name = doc.name ?? doc.type;
-              if (name != null && name.trim().isNotEmpty && !foundRejected.contains(name.trim())) {
+              if (name != null &&
+                  name.trim().isNotEmpty &&
+                  !foundRejected.contains(name.trim())) {
                 foundRejected.add(name.trim());
               }
-              if (doc.rejectionReason != null && doc.rejectionReason!.trim().isNotEmpty) {
+              if (doc.rejectionReason != null &&
+                  doc.rejectionReason!.trim().isNotEmpty) {
                 final r = doc.rejectionReason!.trim();
                 if (!reasons.contains(r)) {
                   reasons.add(r);
@@ -227,6 +272,11 @@ class HomeController extends GetxController {
             if (reasons.isNotEmpty) {
               rejectionReason.value = reasons.join(' • ');
             }
+          } else {
+            // Documents are approved or pending review - no rejection note needed!
+            isRejected.value = false;
+            rejectedDocuments.clear();
+            rejectedDocument.value = null;
           }
         } catch (e) {
           debugPrint('Error fetching docs for rejection in HomeController: $e');
@@ -234,41 +284,35 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       debugPrint('Dashboard fetch error: $e');
-      _syncWithProfile();
+      syncWithProfile();
     } finally {
       isLoadingDashboard.value = false;
       hasLoadedDashboard.value = true;
     }
   }
 
-  void _syncWithProfile() {
-    if (isApproved.value) {
-      if (Get.isRegistered<ProfileController>()) {
-        final profileCtrl = Get.find<ProfileController>();
-        profileCtrl.isActive.value = true;
-        if (profileCtrl.businessStatus.value.isEmpty ||
-            profileCtrl.businessStatus.value.toLowerCase() == 'rejected' ||
-            profileCtrl.businessStatus.value.toLowerCase() == 'pending') {
-          profileCtrl.businessStatus.value = "Approved";
-        }
-      }
-      return;
-    }
-
+  void syncWithProfile() {
     if (Get.isRegistered<ProfileController>()) {
       final profileCtrl = Get.find<ProfileController>();
       final p = profileCtrl.profile.value;
-      if (p != null) {
-        final st = (p.status ?? p.businessStatus)?.toString().toLowerCase().trim();
-        if (st == 'approved' || st == '1' || st == 'active' || st == 'true') {
+      final bStatus = profileCtrl.businessStatus.value;
+      final rawStatus =
+          (p?.restaurantStatus ?? p?.businessStatus ?? p?.status ?? bStatus);
+
+      if (rawStatus != null && rawStatus.toString().trim().isNotEmpty) {
+        final st = rawStatus.toString().toLowerCase().trim();
+        if (st == 'approved' || st == 'verified') {
           isApproved.value = true;
           isRejected.value = false;
-        } else if (st == 'rejected' || st == '2') {
+          hasReuploaded.value = false;
+          LocalStorageService().saveBool('has_reuploaded_documents', false);
+          profileCtrl.isActive.value = true;
+          profileCtrl.businessStatus.value = "Approved";
+          return;
+        } else {
+          // Status is pending or waiting for approval - restaurant not approved yet
           isApproved.value = false;
-          isRejected.value = true;
-        } else if (st == 'pending' || st == '0' || st == 'in_progress') {
-          isApproved.value = false;
-          isRejected.value = false;
+          return;
         }
       }
     }
@@ -332,7 +376,8 @@ class HomeController extends GetxController {
         }
         AppNotification.showSuccess(
           title: isOnline.value ? 'Store is Online' : 'Store is Offline',
-          message: response.message ??
+          message:
+              response.message ??
               (isOnline.value
                   ? 'Your store is now accepting orders.'
                   : 'Your store is now offline.'),
@@ -387,4 +432,3 @@ class HomeController extends GetxController {
     super.onClose();
   }
 }
-

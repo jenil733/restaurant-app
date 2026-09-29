@@ -5,6 +5,7 @@ import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/utils/navigation/app_routes.dart';
 
 import 'package:restaurant_app/src/core/di/service_locator.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,11 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'restaurant',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(scaffoldBackgroundColor: AppColors.background),
+      theme: ThemeData(
+        scaffoldBackgroundColor: AppColors.background,
+        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
+        fontFamily: GoogleFonts.poppins().fontFamily,
+      ),
       initialRoute: AppRoutes.splash,
       getPages: AppRoutes.pages,
     );

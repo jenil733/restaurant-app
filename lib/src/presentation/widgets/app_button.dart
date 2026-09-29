@@ -11,6 +11,7 @@ class AppButton extends StatelessWidget {
     this.backgroundColor = AppColors.primary,
     this.foregroundColor = AppColors.white,
     this.style,
+    this.fontSize,
     this.isLoading = false,
   });
 
@@ -21,6 +22,7 @@ class AppButton extends StatelessWidget {
   final Color backgroundColor;
   final Color foregroundColor;
   final TextStyle? style;
+  final double? fontSize;
   final bool isLoading;
 
   @override
@@ -38,7 +40,10 @@ class AppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           textStyle:
               style ??
-              const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              TextStyle(
+                fontSize: fontSize ?? 14,
+                fontWeight: FontWeight.w500,
+              ),
         ),
         child: isLoading
             ? SizedBox(

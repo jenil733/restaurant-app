@@ -1,5 +1,6 @@
 class ProfileModel {
   final dynamic id;
+  final String? restaurantCode;
   final String? restaurantName;
   final String? ownerName;
   final String? phone;
@@ -14,6 +15,7 @@ class ProfileModel {
   final String? foodType;
   final String? image;
   final dynamic status;
+  final String? restaurantStatus;
   final bool isActive;
   final bool isOnline;
   final String? licenseNo;
@@ -21,6 +23,7 @@ class ProfileModel {
   final String? panNo;
   final String? aadhar;
   final String? businessStatus;
+  final String? rejectionReason;
   final String? accountHolder;
   final String? bankName;
   final String? accountNumber;
@@ -30,6 +33,7 @@ class ProfileModel {
 
   ProfileModel({
     this.id,
+    this.restaurantCode,
     this.restaurantName,
     this.ownerName,
     this.phone,
@@ -44,6 +48,7 @@ class ProfileModel {
     this.foodType,
     this.image,
     this.status,
+    this.restaurantStatus,
     this.isActive = true,
     this.isOnline = false,
     this.licenseNo,
@@ -51,6 +56,7 @@ class ProfileModel {
     this.panNo,
     this.aadhar,
     this.businessStatus,
+    this.rejectionReason,
     this.accountHolder,
     this.bankName,
     this.accountNumber,
@@ -160,8 +166,50 @@ class ProfileModel {
           onlineVal.toLowerCase().trim() == 'true' || onlineVal.trim() == '1';
     }
 
+    final resCode = profileMap?['restaurant_id']?.toString() ??
+        raw['restaurant_id']?.toString();
+
+    final resStatus = raw['Restaurant_status']?.toString() ??
+        raw['restaurant_status']?.toString() ??
+        businessMap?['Restaurant_status']?.toString() ??
+        businessMap?['restaurant_status']?.toString() ??
+        profileMap?['Restaurant_status']?.toString() ??
+        profileMap?['restaurant_status']?.toString() ??
+        (businessMap?['status'] != null && businessMap!['status'].toString().toLowerCase() != 'success' && businessMap!['status'].toString() != '200' ? businessMap!['status'].toString() : null);
+
+    String? getCleanBusinessStatus() {
+      final candidates = [
+        businessMap?['business_status'],
+        businessMap?['Restaurant_status'],
+        businessMap?['restaurant_status'],
+        businessMap?['verification_status'],
+        businessMap?['status'],
+        profileMap?['business_status'],
+        profileMap?['Restaurant_status'],
+        profileMap?['restaurant_status'],
+        profileMap?['verification_status'],
+        profileMap?['status'],
+        raw['Restaurant_status'],
+        raw['restaurant_status'],
+        raw['business_status'],
+        raw['verification_status'],
+      ];
+      for (final c in candidates) {
+        if (c != null) {
+          final s = c.toString().trim();
+          if (s.isNotEmpty && s.toLowerCase() != 'success' && s != '200' && s != 'true' && s != '1' && s != 'false' && s != '0') {
+            return s;
+          }
+        }
+      }
+      return null;
+    }
+
+    final cleanBusinessStatus = getCleanBusinessStatus();
+
     return ProfileModel(
-      id: getVal(['id', 'restaurant_id', 'user_id']),
+      id: profileMap?['id'] ?? raw['id'] ?? getVal(['id', 'user_id']),
+      restaurantCode: resCode,
       restaurantName: getVal([
         'restaurant_name',
         'name',
@@ -198,13 +246,8 @@ class ProfileModel {
       endTime: getVal(['end_time', 'closing_time', 'close_time'])?.toString(),
       foodType: getVal(['food_type', 'restaurant_type', 'type'])?.toString(),
       image: getVal(['image', 'profile_image', 'logo', 'photo'])?.toString(),
-      status: getVal([
-        'Restaurant_status',
-        'restaurant_status',
-        'status',
-        'verification_status',
-        'business_status',
-      ]),
+      status: cleanBusinessStatus,
+      restaurantStatus: resStatus,
       isActive: active,
       isOnline: isOnline,
       licenseNo: getNumberVal([
@@ -244,17 +287,14 @@ class ProfileModel {
         'aadhaar_card_no',
         'aadhar_card_no',
       ]),
-      businessStatus:
-          businessMap?['Restaurant_status']?.toString() ??
-          businessMap?['restaurant_status']?.toString() ??
-          businessMap?['status']?.toString() ??
-          getVal([
-            'Restaurant_status',
-            'restaurant_status',
-            'business_status',
-            'verification_status',
-            'status',
-          ])?.toString(),
+      businessStatus: cleanBusinessStatus ?? resStatus,
+      rejectionReason: getVal([
+        'rejection_reason',
+        'reject_reason',
+        'reason',
+        'message',
+        'rejection_note',
+      ])?.toString(),
       accountHolder:
           bankMap?['account_holder']?.toString() ??
           getVal(['account_holder'])?.toString(),
@@ -273,6 +313,7 @@ class ProfileModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (restaurantCode != null) 'restaurant_id': restaurantCode,
       if (restaurantName != null) 'restaurant_name': restaurantName,
       if (ownerName != null) 'owner_name': ownerName,
       if (phone != null) 'phone': phone,
@@ -287,6 +328,7 @@ class ProfileModel {
       if (foodType != null) 'food_type': foodType,
       if (image != null) 'image': image,
       if (status != null) 'status': status,
+      if (restaurantStatus != null) 'Restaurant_status': restaurantStatus,
       'is_active': isActive,
       'is_online': isOnline,
       if (licenseNo != null) 'license_no': licenseNo,

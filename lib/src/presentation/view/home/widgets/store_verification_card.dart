@@ -87,13 +87,17 @@ class StoreVerificationCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: const Color(0xFFFFF7F2),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: const Color(0xFFFFE8DC),
+              width: 1,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 16,
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 14,
                 spreadRadius: 1,
-                offset: const Offset(0, 5),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -103,8 +107,8 @@ class StoreVerificationCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 86,
-                    height: 86,
+                    width: 90,
+                    height: 90,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
@@ -120,12 +124,13 @@ class StoreVerificationCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              width: 26,
-                              height: 26,
+                              width: 30,
+                              height: 30,
                               decoration: const BoxDecoration(
-                                color: AppColors.primary,
+                                color: Color(0xFFFF823E),
                                 shape: BoxShape.circle,
                               ),
                               alignment: Alignment.center,
@@ -144,7 +149,7 @@ class StoreVerificationCard extends StatelessWidget {
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.textprimary,
-                                  height: 1.25,
+                                  height: 1.2,
                                 ),
                               ),
                             ),
@@ -172,7 +177,7 @@ class StoreVerificationCard extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.18),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                   ),
                 ),
                 child: Column(

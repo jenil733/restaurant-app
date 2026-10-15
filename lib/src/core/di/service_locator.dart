@@ -66,6 +66,7 @@ import '../../data/repository/document_repository_impl.dart';
 
 // Use Cases
 import '../../domain/usecase/register_usecase.dart';
+import '../../domain/usecase/complete_registration_usecase.dart';
 import '../../domain/usecase/send_otp_usecase.dart';
 import '../../domain/usecase/resend_restaurant_otp_usecase.dart';
 import '../../domain/usecase/verify_otp_usecase.dart';
@@ -322,6 +323,12 @@ Future<void> initDependencies() async {
   if (!sl.isRegistered<RegisterUseCase>()) {
     sl.registerLazySingleton<RegisterUseCase>(
       () => RegisterUseCase(sl<RegisterRepository>()),
+    );
+  }
+
+  if (!sl.isRegistered<CompleteRegistrationUseCase>()) {
+    sl.registerLazySingleton<CompleteRegistrationUseCase>(
+      () => CompleteRegistrationUseCase(sl<RegisterRepository>()),
     );
   }
 

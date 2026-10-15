@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
 import 'package:restaurant_app/src/presentation/controller/order_deatil_controller.dart';
 import 'package:restaurant_app/src/presentation/view/orders/widgets/reason_dialog.dart';
-
 
 class OrderInfoCard extends StatelessWidget {
   OrderInfoCard({super.key});
@@ -16,10 +16,10 @@ class OrderInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => Container(
-       padding: const EdgeInsets.symmetric(
-    horizontal: 12,
-    vertical: 12,
-  ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
@@ -42,11 +42,11 @@ class OrderInfoCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SvgPicture.asset(
-  boxIcon,
-  width: 8,
-  height: 8,
-  color: AppColors.primary,
-),
+                boxIcon,
+                width: 8,
+                height: 8,
+                color: AppColors.primary,
+              ),
             ),
 
             const SizedBox(width: 12),
@@ -55,9 +55,9 @@ class OrderInfoCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Order ID",
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.grey,
                       fontSize: 12,
                     ),
@@ -65,7 +65,7 @@ class OrderInfoCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     controller.orderId.value,
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
@@ -73,7 +73,7 @@ class OrderInfoCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     "${controller.date.value}   ${controller.time.value}",
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.grey,
                       fontSize: 12,
                     ),
@@ -83,127 +83,136 @@ class OrderInfoCard extends StatelessWidget {
             ),
 
             Column(
-  crossAxisAlignment: CrossAxisAlignment.end,
-  children: [
-    /// Status Badge
-    Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 4,
-      ),
-      decoration: BoxDecoration(
-        color: controller.orderStatus.value == "Completed"
-            ? Colors.green
-            : controller.orderStatus.value == "Cancelled"
-                ? Colors.red
-                : const Color(0xffF37021),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Text(
-        controller.orderStatus.value,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    ),
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                /// Status Badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: controller.isCompleted
+                        ? Colors.green
+                        : controller.isCancelled
+                            ? Colors.red
+                            : controller.isFoodReady
+                                ? const Color(0xFF059669)
+                                : controller.isAccepted
+                                    ? const Color(0xFF2563EB)
+                                    : const Color(0xffF37021),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    controller.formattedStatus,
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
 
-    const SizedBox(height: 5),
+                const SizedBox(height: 5),
 
-    /// Completed Order
-    if (controller.orderStatus.value == "Completed") ...[
-      const Text(
-        "Delivered on",
-        style: TextStyle(
-          color: Colors.grey,
-          fontSize: 10,
-        ),
-      ),
-      Text(
-        controller.deliveryDate.value, // Example: 12/03/2025
-        style: const TextStyle(
-          color: Colors.green,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    ]
+                /// Completed Order
+                if (controller.isCompleted) ...[
+                  Text(
+                    "Delivered on",
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey,
+                      fontSize: 10,
+                    ),
+                  ),
+                  Text(
+                    controller.deliveryDate.value.isNotEmpty
+                        ? controller.deliveryDate.value
+                        : controller.date.value,
+                    style: GoogleFonts.poppins(
+                      color: Colors.green,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ]
 
-    /// Cancelled Order
-    else if (controller.orderStatus.value == "Cancelled" ||
-        controller.orderStatus.value == "Cancel") ...[
-      const SizedBox(height: 6),
+                /// Cancelled Order
+                else if (controller.isCancelled) ...[
+                  const SizedBox(height: 6),
 
-  InkWell(
-     onTap: () {
-    ReasonDialog.show(
-      controller.cancelReason.value,
-    );
-  },
-    child: Container(
-      height: 24,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 58, 134, 248),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.remove_red_eye_outlined,
-            color: Colors.white,
-            size: 12,
-          ),
-          SizedBox(width: 4),
-          Text(
-            "Reason",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
+                  InkWell(
+                    onTap: () {
+                      ReasonDialog.show(
+                        controller.cancelReason.value,
+                      );
+                    },
+                    child: Container(
+                      height: 24,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 58, 134, 248),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.remove_red_eye_outlined,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "Reason",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ]
+
+                /// Pending, Accepted, or Food Ready Order
+                else ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: controller.isPaid
+                          ? Colors.green.shade50
+                          : const Color(0xFFFFF7ED),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      "Payment : ${controller.formattedPaymentStatus}",
+                      style: GoogleFonts.poppins(
+                        color: controller.isPaid
+                            ? Colors.green.shade700
+                            : const Color(0xFFEA580C),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    "Method : ${controller.formattedPaymentMethod}",
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey,
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ],
             ),
-          ),
-        ],
-      ),
-    ),
-  ),
-]
-
-    /// Pending Order
-    else ...[
-      Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 3,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.green.shade50,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Text(
-          "Payment : ${controller.paymentStatus.value}",
-          style: TextStyle(
-            color: Colors.green.shade700,
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-
-      const SizedBox(height: 4),
-
-      Text(
-        "Method : ${controller.paymentMethod.value}",
-        style: const TextStyle(
-          color: Colors.grey,
-          fontSize: 10,
-        ),
-      ),
-    ],
-  ],
-),
           ],
         ),
       ),

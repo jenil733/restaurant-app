@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 
 class CustomButton extends StatelessWidget {
@@ -55,7 +56,7 @@ class CustomButton extends StatelessWidget {
             : Text(
                 text,
                 style: textStyle ??
-                    TextStyle(
+                    GoogleFonts.poppins(
                       fontSize: fontSize ?? 18,
                       fontWeight: fontWeight ?? FontWeight.w600,
                       color: textColor ?? Colors.white,

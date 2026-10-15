@@ -95,6 +95,12 @@ class RecentOrdersTable extends StatelessWidget {
                     'View',
                     liveOrders[i].status,
                   ],
+                  onViewTap: () {
+                    Get.to(
+                      () => const OrderDetailScreen(),
+                      arguments: liveOrders[i].toJson(),
+                    );
+                  },
                 ),
             ],
           );
@@ -105,10 +111,15 @@ class RecentOrdersTable extends StatelessWidget {
 }
 
 class _OrderTableRow extends StatelessWidget {
-  const _OrderTableRow({required this.values, this.isHeader = false});
+  const _OrderTableRow({
+    required this.values,
+    this.isHeader = false,
+    this.onViewTap,
+  });
 
   final List<String> values;
   final bool isHeader;
+  final VoidCallback? onViewTap;
 
   @override
   Widget build(BuildContext context) {
@@ -182,9 +193,10 @@ class _OrderTableRow extends StatelessWidget {
 
     if (!isHeader && value == 'View') {
       return GestureDetector(
-        onTap: () {
-          Get.to(() => OrderDetailScreen());
-        },
+        onTap: onViewTap ??
+            () {
+              Get.to(() => const OrderDetailScreen());
+            },
         child: content,
       );
     }

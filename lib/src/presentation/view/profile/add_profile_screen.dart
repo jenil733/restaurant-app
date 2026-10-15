@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/data/models/update_profile_model.dart';
@@ -271,7 +272,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: 16,
             ),
           ),
@@ -289,7 +290,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 controller.text = formatted;
               }
             },
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.black,
               fontSize: 16,
             ),
@@ -297,7 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               filled: true,
               fillColor: Colors.white,
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
+                 horizontal: 14,
                 vertical: 16,
               ),
               suffixIcon: const Icon(
@@ -339,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: 16,
             ),
           ),
@@ -347,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           TextField(
             controller: controller,
             readOnly: readOnly,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.black,
               fontSize: 16,
             ),

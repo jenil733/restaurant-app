@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "197521893777",
+    "project_id": "kayal-user-app",
+    "storage_bucket": "kayal-user-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197521893777:android:9d7e231a30f685cd1d9230",
+        "android_client_info": {
+          "package_name": "com.kayal.restaurant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7YdCgM2lMhEWr1Q9uXNVFMS_7UTLjK6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197521893777:android:2053e43279937a0f1d9230",
+        "android_client_info": {
+          "package_name": "com.kayal.user"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7YdCgM2lMhEWr1Q9uXNVFMS_7UTLjK6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

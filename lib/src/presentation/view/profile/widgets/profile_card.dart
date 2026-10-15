@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
 import 'package:restaurant_app/src/core/utils/helper/image_helper.dart';
 import 'package:restaurant_app/src/presentation/controller/profile_controller.dart';
 import 'package:restaurant_app/src/core/utils/helper/approval_helper.dart';
+import 'package:restaurant_app/src/presentation/view/profile/add_profile_screen.dart'
+    as add_profile;
 
 Widget profileCard(ProfileController controller) {
   return Obx(
@@ -70,17 +73,22 @@ Widget profileCard(ProfileController controller) {
                   Positioned(
                     bottom: 2,
                     right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.pink, width: 1),
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        size: 16,
-                        color: Colors.pink,
+                    child: InkWell(
+                      onTap: () =>
+                          Get.to(() => const add_profile.ProfileScreen()),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.pink, width: 1),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          size: 16,
+                          color: Colors.pink,
+                        ),
                       ),
                     ),
                   )
@@ -134,9 +142,10 @@ Widget profileCard(ProfileController controller) {
                       const SizedBox(width: 5),
                       Text(
                         displayText,
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           color: textColor,
                           fontWeight: FontWeight.w600,
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -155,7 +164,7 @@ Widget profileCard(ProfileController controller) {
                       ? controller.restaurantName.value
                       : (controller.isLoading.value ? "Loading..." : "Restaurant"),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -166,7 +175,7 @@ Widget profileCard(ProfileController controller) {
                       ? "Owner : ${controller.ownerName.value}"
                       : (controller.isLoading.value ? "" : "Owner : N/A"),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 17),
+                  style: GoogleFonts.poppins(fontSize: 17),
                 ),
                 if (controller.restaurantId.value.isNotEmpty &&
                     controller.restaurantId.value != 'null') ...[
@@ -189,10 +198,10 @@ Widget profileCard(ProfileController controller) {
                           : (int.tryParse(controller.restaurantId.value) != null
                               ? "ID: RST${controller.restaurantId.value.padLeft(3, '0')}"
                               : "ID: ${controller.restaurantId.value}"),
-                      style: const TextStyle(
+                      style: GoogleFonts.poppins(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xff2E3C97),
+                        color: const Color(0xff2E3C97),
                       ),
                     ),
                   ),

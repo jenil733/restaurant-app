@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/presentation/controller/profile_controller.dart';
-import 'package:restaurant_app/src/presentation/view/profile/add_profile_screen.dart';
 
 Widget restaurantCard(ProfileController controller) {
   return Obx(
@@ -13,18 +13,14 @@ Widget restaurantCard(ProfileController controller) {
           Icons.storefront_outlined,
           "Restaurant Name",
           controller.restaurantName.value.isNotEmpty ? controller.restaurantName.value : "N/A",
-          showArrow: true,
-          onTap: () {
-            Get.to(() => const ProfileScreen());
-          },
         ),
-        infoRow(
-          Icons.restaurant_menu,
-          "Restaurant Type",
-          controller.foodType.value.isNotEmpty ? controller.foodType.value : "N/A",
-          iconColor: Colors.deepOrange,
-          bgColor: Colors.deepOrange.withOpacity(0.1),
-        ),
+        // infoRow(
+        //   Icons.restaurant_menu,
+        //   "Restaurant Type",
+        //   controller.foodType.value.isNotEmpty ? controller.foodType.value : "N/A",
+        //   iconColor: Colors.deepOrange,
+        //   bgColor: Colors.deepOrange.withOpacity(0.1),
+        // ),
         infoRow(
           Icons.person,
           "Owner Name",
@@ -96,7 +92,7 @@ Widget infoCard({
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
@@ -151,7 +147,7 @@ Widget infoRow(
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.grey,
                       fontSize: 14,
                     ),
@@ -159,7 +155,7 @@ Widget infoRow(
                   const SizedBox(height: 2),
                   Text(
                     value,
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
                     ),

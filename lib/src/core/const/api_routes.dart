@@ -1,7 +1,6 @@
 class ApiRoutes {
   
   static const String baseURL = 'http://64.227.170.206/kayal.com/public/api/restaurant';
-  
   static const String imageBaseURL = 'http://64.227.170.206/kayal.com/public/storage/';
   static const String apiKey = 'sdfghjkcvbnfghjkcvbnmdfghjdfvgbncvbn';
 
@@ -12,6 +11,7 @@ class ApiRoutes {
   static const String resendOtp = '/resend_otp';
   static const String verifyOtp = '/verify_otp';
   static const String register = '/register';
+  static const String completeRegistration = '/complete_registration';
   static const String logout = '/logout';
   static const String profile = '/profile';
   static const String updateProfile = '/update_profile';

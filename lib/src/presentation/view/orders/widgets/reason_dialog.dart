@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ReasonDialog {
   static void show(String remark) {
@@ -15,9 +16,9 @@ class ReasonDialog {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Remark",
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                 ),
@@ -36,7 +37,7 @@ class ReasonDialog {
                 ),
                 child: Text(
                   remark,
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 16,
                     color: Colors.black87,
                     height: 1.5,
@@ -60,9 +61,9 @@ class ReasonDialog {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Close",
-                      style: TextStyle(
+                      style: GoogleFonts.poppins(
                         color: Colors.red,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

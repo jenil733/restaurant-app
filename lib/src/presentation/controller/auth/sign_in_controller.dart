@@ -9,6 +9,7 @@ import 'package:restaurant_app/src/data/models/restaurant_resend_otp_model.dart'
 import 'package:restaurant_app/src/data/repository/otp_repository_impl.dart';
 import 'package:restaurant_app/src/data/repository/register_repository_impl.dart';
 import 'package:restaurant_app/src/domain/usecase/register_usecase.dart';
+import 'package:restaurant_app/src/domain/usecase/complete_registration_usecase.dart';
 import 'package:restaurant_app/src/domain/usecase/resend_restaurant_otp_usecase.dart';
 import 'package:restaurant_app/src/data/models/upload_document_model.dart';
 import 'package:restaurant_app/src/data/repository/document_repository_impl.dart';
@@ -21,15 +22,23 @@ import 'package:restaurant_app/src/presentation/widgets/app_notification.dart';
 class SignInController extends GetxController {
   SignInController({
     RegisterUseCase? registerUseCase,
+    CompleteRegistrationUseCase? completeRegistrationUseCase,
     ResendRestaurantOtpUseCase? resendRestaurantOtpUseCase,
-  })  : _registerUseCase = registerUseCase ??
-            (sl.isRegistered<RegisterUseCase>()
-                ? sl<RegisterUseCase>()
-                : RegisterUseCase(RegisterRepositoryImpl(ApiService()))),
-        _resendRestaurantOtpUseCase = resendRestaurantOtpUseCase ??
-            (sl.isRegistered<ResendRestaurantOtpUseCase>()
-                ? sl<ResendRestaurantOtpUseCase>()
-                : ResendRestaurantOtpUseCase(OtpRepositoryImpl(ApiService())));
+  }) : _registerUseCase =
+           registerUseCase ??
+           (sl.isRegistered<RegisterUseCase>()
+               ? sl<RegisterUseCase>()
+               : RegisterUseCase(RegisterRepositoryImpl(ApiService()))),
+       _completeRegistrationUseCase =
+           completeRegistrationUseCase ??
+           (sl.isRegistered<CompleteRegistrationUseCase>()
+               ? sl<CompleteRegistrationUseCase>()
+               : CompleteRegistrationUseCase(RegisterRepositoryImpl(ApiService()))),
+       _resendRestaurantOtpUseCase =
+           resendRestaurantOtpUseCase ??
+           (sl.isRegistered<ResendRestaurantOtpUseCase>()
+               ? sl<ResendRestaurantOtpUseCase>()
+               : ResendRestaurantOtpUseCase(OtpRepositoryImpl(ApiService())));
 
   static const int stepCount = 4;
 
@@ -39,7 +48,17 @@ class SignInController extends GetxController {
     'Both',
   ];
 
+  static const List<String> availablePreparationTimings = [
+    '10 mins',
+    '20 mins',
+    '30 mins',
+    '45 mins',
+    '60 mins',
+    '60+ mins',
+  ];
+
   final RegisterUseCase _registerUseCase;
+  final CompleteRegistrationUseCase _completeRegistrationUseCase;
   final ResendRestaurantOtpUseCase _resendRestaurantOtpUseCase;
   final ImagePicker _picker = ImagePicker();
 
@@ -51,6 +70,7 @@ class SignInController extends GetxController {
     (_) => GlobalKey<FormState>(),
   );
   final RxInt currentStep = 0.obs;
+  final RxnString restaurantDbId = RxnString();
   final RxnString restaurantType = RxnString();
   final RxSet<String> selectedDocuments = <String>{}.obs;
   final RxBool acceptedTerms = false.obs;
@@ -74,6 +94,7 @@ class SignInController extends GetxController {
   final pincodeController = TextEditingController();
   final startTimeController = TextEditingController();
   final endTimeController = TextEditingController();
+  final foodPreparationTimingController = TextEditingController();
   final fssaiController = TextEditingController();
   final aadhaarController = TextEditingController();
   final panController = TextEditingController();
@@ -99,6 +120,7 @@ class SignInController extends GetxController {
     pincodeController,
     startTimeController,
     endTimeController,
+    foodPreparationTimingController,
     fssaiController,
     aadhaarController,
     panController,
@@ -112,6 +134,15 @@ class SignInController extends GetxController {
     termsController,
     privacyController,
   ];
+
+  @override
+  void onInit() {
+    super.onInit();
+    final savedId = LocalStorageService().getString('restaurant_id');
+    if (savedId != null && savedId.isNotEmpty) {
+      restaurantDbId.value = savedId;
+    }
+  }
 
   String? requiredValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -188,7 +219,9 @@ class SignInController extends GetxController {
       return 'GSTIN number is required';
     }
     final clean = value.trim().toUpperCase();
-    if (!RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$').hasMatch(clean)) {
+    if (!RegExp(
+      r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$',
+    ).hasMatch(clean)) {
       return 'Enter a valid 15-character GSTIN (e.g. 22AAAAA0000A1Z5)';
     }
     return null;
@@ -219,7 +252,9 @@ class SignInController extends GetxController {
       return 'Account number is required';
     }
     final clean = value.trim();
-    if (clean.length < 9 || clean.length > 18 || !RegExp(r'^[0-9]+$').hasMatch(clean)) {
+    if (clean.length < 9 ||
+        clean.length > 18 ||
+        !RegExp(r'^[0-9]+$').hasMatch(clean)) {
       return 'Account number must be between 9 and 18 digits';
     }
     return null;
@@ -230,7 +265,8 @@ class SignInController extends GetxController {
       return 'IFSC code is required';
     }
     final clean = value.trim().toUpperCase();
-    if (clean.length != 11 || !RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$').hasMatch(clean)) {
+    if (clean.length != 11 ||
+        !RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$').hasMatch(clean)) {
       return 'Enter a valid 11-character IFSC code (e.g. SBIN0001234)';
     }
     return null;
@@ -357,7 +393,8 @@ class SignInController extends GetxController {
       }
 
       if (currentStep.value == 0) {
-        if (profileImagePath.value == null || profileImagePath.value!.trim().isEmpty) {
+        if (profileImagePath.value == null ||
+            profileImagePath.value!.trim().isEmpty) {
           AppNotification.showError(
             title: 'Photo required',
             message: 'Please upload restaurant profile photo to continue.',
@@ -365,24 +402,30 @@ class SignInController extends GetxController {
           return;
         }
 
-        if (restaurantType.value == null || restaurantType.value!.trim().isEmpty) {
+        if (restaurantType.value == null ||
+            restaurantType.value!.trim().isEmpty) {
           AppNotification.showError(
             title: 'Restaurant type required',
             message: 'Select your restaurant type to continue.',
           );
           return;
         }
+
+        final success = await _registerStep0();
+        if (!success) return;
       }
 
       if (currentStep.value == 1) {
-        if (fssaiFilePath.value == null || fssaiFilePath.value!.trim().isEmpty) {
+        if (fssaiFilePath.value == null ||
+            fssaiFilePath.value!.trim().isEmpty) {
           AppNotification.showError(
             title: 'FSSAI Certificate required',
             message: 'Please upload your FSSAI Certificate to continue.',
           );
           return;
         }
-        if (aadharFilePath.value == null || aadharFilePath.value!.trim().isEmpty) {
+        if (aadharFilePath.value == null ||
+            aadharFilePath.value!.trim().isEmpty) {
           AppNotification.showError(
             title: 'Aadhaar Card required',
             message: 'Please upload your Aadhaar Card to continue.',
@@ -414,7 +457,7 @@ class SignInController extends GetxController {
           return;
         }
 
-        await _submitRegistration();
+        await _submitCompleteRegistration();
         return;
       }
 
@@ -432,7 +475,7 @@ class SignInController extends GetxController {
     }
   }
 
-  Future<void> _submitRegistration() async {
+  Future<bool> _registerStep0() async {
     isLoading.value = true;
     try {
       final request = RegisterRequestModel(
@@ -446,6 +489,67 @@ class SignInController extends GetxController {
         pincode: pincodeController.text.trim(),
         startTime: startTimeController.text.trim(),
         endTime: endTimeController.text.trim(),
+        foodPreparationTiming: foodPreparationTimingController.text.trim(),
+        restaurantType: restaurantType.value,
+        imagePath: profileImagePath.value,
+      );
+
+      final response = await _registerUseCase(request);
+
+      if (response.data is Map) {
+        final resMap = response.data as Map;
+        final possibleId = (resMap['restaurant_db_id'] ??
+                resMap['restaurant_id'] ??
+                resMap['id'] ??
+                resMap['user_id'] ??
+                (resMap['restaurant'] is Map
+                    ? resMap['restaurant']['id']
+                    : null))
+            ?.toString()
+            .trim();
+        if (possibleId != null && possibleId.isNotEmpty) {
+          restaurantDbId.value = possibleId;
+          await LocalStorageService().saveString('restaurant_id', possibleId);
+        }
+      }
+
+      AppNotification.showSuccess(
+        title: 'Step 1 Completed',
+        message: response.message.isNotEmpty
+            ? response.message
+            : 'Restaurant details saved successfully. Please continue registration.',
+      );
+      return true;
+    } on Failure catch (e) {
+      // ignore: avoid_print
+      print('❌ [REGISTER STEP 0 FAILURE]: ${e.message}');
+      AppNotification.showError(
+        title: 'Registration failed',
+        message: e.message,
+      );
+      return false;
+    } catch (e) {
+      // ignore: avoid_print
+      print('❌ [REGISTER STEP 0 EXCEPTION]: $e');
+      AppNotification.showError(
+        title: 'Registration error',
+        message: 'Failed to submit registration: $e',
+      );
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> _submitCompleteRegistration() async {
+    isLoading.value = true;
+    try {
+      final restId = restaurantDbId.value ??
+          LocalStorageService().getString('restaurant_id') ??
+          '';
+
+      final request = CompleteRegistrationRequestModel(
+        restaurantId: restId,
         licenseNo: fssaiController.text.trim(),
         aadhar: aadhaarController.text.trim(),
         panNo: panController.text.trim(),
@@ -456,50 +560,49 @@ class SignInController extends GetxController {
         ifscCode: ifscController.text.trim(),
         branchName: branchNameController.text.trim(),
         upiId: upiController.text.trim(),
-        restaurantType: restaurantType.value,
         termsConditions: termsController.text.trim().isNotEmpty
             ? termsController.text.trim()
             : 'I agree to the terms',
         privacyPolicy: privacyController.text.trim().isNotEmpty
             ? privacyController.text.trim()
             : 'I agree to the privacy policy',
-        imagePath: profileImagePath.value,
         fssaiFilePath: fssaiFilePath.value,
         aadharFilePath: aadharFilePath.value,
         panFilePath: panFilePath.value,
         gstFilePath: gstFilePath.value,
       );
 
-      final response = await _registerUseCase(request);
+      final response = await _completeRegistrationUseCase(request);
 
-      if (response.data is Map) {
-        final resMap = response.data as Map;
-        final possibleId = resMap['restaurant_id'] ??
-            resMap['id'] ??
-            resMap['user_id'] ??
-            (resMap['restaurant'] is Map ? resMap['restaurant']['id'] : null);
-        if (possibleId != null && possibleId.toString().trim().isNotEmpty) {
-          await LocalStorageService().saveString('restaurant_id', possibleId.toString().trim());
-        }
-      }
+      await LocalStorageService().saveBool('is_logged_in', true);
+      Get.offAllNamed<void>(AppRoutes.home);
 
-      Get.back<void>();
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (Get.isRegistered<HomeController>()) {
+          final homeCtrl = Get.find<HomeController>();
+          homeCtrl.isApproved.value = false;
+          homeCtrl.clearRejectionState();
+          homeCtrl.refreshDashboard();
+        }
         AppNotification.showSuccess(
-          title: 'Registration complete',
+          title: 'Registration Complete',
           message: response.message.isNotEmpty
               ? response.message
-              : 'Your restaurant details were submitted successfully.',
+              : 'Restaurant details and documents submitted successfully. Verification is in progress.',
         );
       });
     } on Failure catch (e) {
+      // ignore: avoid_print
+      print('❌ [COMPLETE REGISTRATION FAILURE]: ${e.message}');
       AppNotification.showError(
-        title: 'Registration failed',
+        title: 'Submission failed',
         message: e.message,
       );
     } catch (e) {
+      // ignore: avoid_print
+      print('❌ [COMPLETE REGISTRATION EXCEPTION]: $e');
       AppNotification.showError(
-        title: 'Registration error',
+        title: 'Submission error',
         message: 'Failed to submit registration: $e',
       );
     } finally {
@@ -596,7 +699,8 @@ class SignInController extends GetxController {
   }
 
   Future<void> submitReuploadDocuments() async {
-    final hasFiles = selectedDocuments.isNotEmpty ||
+    final hasFiles =
+        selectedDocuments.isNotEmpty ||
         (fssaiFilePath.value != null && fssaiFilePath.value!.isNotEmpty) ||
         (gstFilePath.value != null && gstFilePath.value!.isNotEmpty) ||
         (panFilePath.value != null && panFilePath.value!.isNotEmpty) ||
@@ -616,20 +720,33 @@ class SignInController extends GetxController {
           ? sl<UploadDocumentUseCase>()
           : UploadDocumentUseCase(DocumentRepositoryImpl(ApiService()));
 
-      final hasFssai = fssaiFilePath.value != null && fssaiFilePath.value!.trim().isNotEmpty;
-      final hasAadhaar = aadharFilePath.value != null && aadharFilePath.value!.trim().isNotEmpty;
-      final hasPan = panFilePath.value != null && panFilePath.value!.trim().isNotEmpty;
-      final hasGst = gstFilePath.value != null && gstFilePath.value!.trim().isNotEmpty;
+      final hasFssai =
+          fssaiFilePath.value != null && fssaiFilePath.value!.trim().isNotEmpty;
+      final hasAadhaar =
+          aadharFilePath.value != null &&
+          aadharFilePath.value!.trim().isNotEmpty;
+      final hasPan =
+          panFilePath.value != null && panFilePath.value!.trim().isNotEmpty;
+      final hasGst =
+          gstFilePath.value != null && gstFilePath.value!.trim().isNotEmpty;
 
       final request = UploadDocumentRequestModel(
         fssaiFilePath: hasFssai ? fssaiFilePath.value : null,
         gstFilePath: hasGst ? gstFilePath.value : null,
         panFilePath: hasPan ? panFilePath.value : null,
         aadharFilePath: hasAadhaar ? aadharFilePath.value : null,
-        fssaiNumber: hasFssai && fssaiController.text.trim().isNotEmpty ? fssaiController.text.trim() : null,
-        aadhaarNumber: hasAadhaar && aadhaarController.text.trim().isNotEmpty ? aadhaarController.text.trim() : null,
-        panNumber: hasPan && panController.text.trim().isNotEmpty ? panController.text.trim() : null,
-        gstNumber: hasGst && gstController.text.trim().isNotEmpty ? gstController.text.trim() : null,
+        fssaiNumber: hasFssai && fssaiController.text.trim().isNotEmpty
+            ? fssaiController.text.trim()
+            : null,
+        aadhaarNumber: hasAadhaar && aadhaarController.text.trim().isNotEmpty
+            ? aadhaarController.text.trim()
+            : null,
+        panNumber: hasPan && panController.text.trim().isNotEmpty
+            ? panController.text.trim()
+            : null,
+        gstNumber: hasGst && gstController.text.trim().isNotEmpty
+            ? gstController.text.trim()
+            : null,
       );
 
       final response = await uploadUseCase(request);

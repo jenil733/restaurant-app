@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/data/models/update_bank_details_model.dart';
 import 'package:restaurant_app/src/presentation/controller/bank_details_controller.dart';
@@ -191,14 +192,14 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
           Text.rich(
             TextSpan(
               text: title,
-              style: const TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 16,
               ),
               children: [
                 if (required)
-                  const TextSpan(
+                  TextSpan(
                     text: ' *',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.red,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -213,7 +214,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
             readOnly: readOnly,
             keyboardType: keyboardType,
             textCapitalization: textCapitalization,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.black,
               fontSize: 16,
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/api_routes.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
 import 'package:restaurant_app/src/core/utils/helper/image_helper.dart';
@@ -11,7 +12,8 @@ import 'package:restaurant_app/src/presentation/view/feedback/feed_back_screen.d
 import 'package:restaurant_app/src/presentation/view/help&Support/help_support_screen.dart';
 import 'package:restaurant_app/src/presentation/view/products/product_screen.dart';
 import 'package:restaurant_app/src/presentation/view/products/category_screen.dart';
-import 'package:restaurant_app/src/presentation/view/profile/profile_screen.dart' as profile_view;
+import 'package:restaurant_app/src/presentation/view/profile/add_profile_screen.dart'
+    as add_profile_view;
 import 'package:restaurant_app/src/presentation/view/profile/bank_detail_screen.dart';
 import 'package:restaurant_app/src/presentation/view/notification/notification_screen.dart';
 import 'package:restaurant_app/src/presentation/view/sales/sales_screen.dart';
@@ -26,7 +28,8 @@ class CustomDrawer extends StatelessWidget {
         ? Get.find<ProfileController>()
         : Get.put(ProfileController());
 
-    if (profileController.profile.value == null && !profileController.isLoading.value) {
+    if (profileController.profile.value == null &&
+        !profileController.isLoading.value) {
       profileController.fetchProfile();
     }
 
@@ -68,11 +71,10 @@ class CustomDrawer extends StatelessWidget {
                         height: 24,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.15), // circle background
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 1,
-                          ),
+                          color: Colors.white.withOpacity(
+                            0.15,
+                          ), // circle background
+                          border: Border.all(color: Colors.white, width: 1),
                         ),
                         child: const Center(
                           child: Icon(
@@ -88,10 +90,13 @@ class CustomDrawer extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Obx(() {
-                      final rawName = profileController.restaurantName.value.trim();
+                      final rawName = profileController.restaurantName.value
+                          .trim();
                       final displayName = rawName.isNotEmpty
                           ? rawName
-                          : (profileController.isLoading.value ? "Loading..." : "Restaurant");
+                          : (profileController.isLoading.value
+                                ? "Loading..."
+                                : "Restaurant");
 
                       final rawId = profileController.restaurantId.value.trim();
                       String displayId = "";
@@ -107,7 +112,8 @@ class CustomDrawer extends StatelessWidget {
                         }
                       }
 
-                      final imageStr = profileController.profileImage.value.trim();
+                      final imageStr = profileController.profileImage.value
+                          .trim();
                       final fullImageUrl = ImageHelper.getImageUrl(imageStr);
 
                       return Column(
@@ -118,35 +124,33 @@ class CustomDrawer extends StatelessWidget {
                             height: 82,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2,
-                              ),
+                              border: Border.all(color: Colors.white, width: 2),
                               color: Colors.white.withOpacity(0.15),
                             ),
                             child: ClipOval(
-                              child: fullImageUrl != null && fullImageUrl.isNotEmpty
+                              child:
+                                  fullImageUrl != null &&
+                                      fullImageUrl.isNotEmpty
                                   ? (fullImageUrl.startsWith('assets/')
-                                      ? Image.asset(
-                                          fullImageUrl,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) => Image.asset(
-                                            userProfile,
+                                        ? Image.asset(
+                                            fullImageUrl,
                                             fit: BoxFit.cover,
-                                          ),
-                                        )
-                                      : Image.network(
-                                          fullImageUrl,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) => Image.asset(
-                                            userProfile,
+                                            errorBuilder: (_, __, ___) =>
+                                                Image.asset(
+                                                  userProfile,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                          )
+                                        : Image.network(
+                                            fullImageUrl,
                                             fit: BoxFit.cover,
-                                          ),
-                                        ))
-                                  : Image.asset(
-                                      userProfile,
-                                      fit: BoxFit.cover,
-                                    ),
+                                            errorBuilder: (_, __, ___) =>
+                                                Image.asset(
+                                                  userProfile,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                          ))
+                                  : Image.asset(userProfile, fit: BoxFit.cover),
                             ),
                           ),
 
@@ -159,7 +163,7 @@ class CustomDrawer extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontSize: 21,
                                 fontWeight: FontWeight.bold,
@@ -171,7 +175,7 @@ class CustomDrawer extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               displayId,
-                              style: const TextStyle(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white70,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -202,8 +206,8 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     "Restaurant Info",
                     onTap: () {
-                      Get.back(); // Close the drawer fir
-                      Get.to(() => profile_view.ProfileScreen());
+                      Get.back(); // Close the drawer first
+                      Get.to(() => const add_profile_view.ProfileScreen());
                     },
                   ),
                   drawerItem(
@@ -265,37 +269,37 @@ class CustomDrawer extends StatelessWidget {
                     },
                   ),
                   drawerItem(
-  SvgPicture.asset(
-    customerReviewIcon,
-    width: 22,
-    height: 22,
-    colorFilter: const ColorFilter.mode(
-      Color(0xff2B3142),
-      BlendMode.srcIn,
-    ),
-  ),
-  "Customer Review",
-  onTap: () {
-    Get.back();
-    Get.to(() => CustomerReviewScreen());
-  },
-),
+                    SvgPicture.asset(
+                      customerReviewIcon,
+                      width: 22,
+                      height: 22,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xff2B3142),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    "Customer Review",
+                    onTap: () {
+                      Get.back();
+                      Get.to(() => CustomerReviewScreen());
+                    },
+                  ),
                   drawerItem(
-                    Icons.feedback_outlined, 
+                    Icons.feedback_outlined,
                     "Feedbacks",
                     onTap: () {
                       Get.back(); // Close the drawer first
                       Get.to(() => FeedbackScreen());
                     },
-                    ),
+                  ),
                   drawerItem(
-                    Icons.headset_mic_outlined, 
+                    Icons.headset_mic_outlined,
                     "Help & Support",
                     onTap: () {
                       Get.back(); // Close the drawer first
                       Get.to(() => HelpSupportSCreen());
                     },
-                    ),
+                  ),
 
                   const Divider(),
 
@@ -306,8 +310,8 @@ class CustomDrawer extends StatelessWidget {
                     textColor: Colors.red,
                     arrowColor: Colors.red,
                     onTap: () {
-    showLogoutDialog(context);
-  },
+                      showLogoutDialog(context);
+                    },
                   ),
                 ],
               ),
@@ -319,54 +323,47 @@ class CustomDrawer extends StatelessWidget {
   }
 
   Widget drawerItem(
-  dynamic icon,
-  String title, {
-  Color iconColor = const Color(0xff2B3142),
-  Color textColor = const Color(0xff2B3142),
-  Color arrowColor = Colors.grey,
-  VoidCallback? onTap,
-}) {
-  return InkWell(
-    onTap: onTap ?? () {},
-    child: Container(
-      height: 58,
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 28,
-            height: 28,
-            child: Center(
-              child: icon is IconData
-                  ? Icon(
-                      icon,
-                      color: iconColor,
-                      size: 22,
-                    )
-                  : icon,
-            ),
-          ),
-
-          const SizedBox(width: 16),
-
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                color: textColor,
-                fontWeight: FontWeight.w500,
+    dynamic icon,
+    String title, {
+    Color iconColor = const Color(0xff2B3142),
+    Color textColor = const Color(0xff2B3142),
+    Color arrowColor = Colors.grey,
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap ?? () {},
+      child: Container(
+        height: 58,
+        padding: const EdgeInsets.symmetric(horizontal: 18),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 28,
+              height: 28,
+              child: Center(
+                child: icon is IconData
+                    ? Icon(icon, color: iconColor, size: 22)
+                    : icon,
               ),
             ),
-          ),
 
-          Icon(
-            Icons.chevron_right,
-            color: arrowColor,
-          ),
-        ],
+            const SizedBox(width: 16),
+
+            Expanded(
+              child: Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  color: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+
+            Icon(Icons.chevron_right, color: arrowColor),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

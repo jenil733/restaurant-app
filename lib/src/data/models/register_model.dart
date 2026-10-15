@@ -11,27 +11,10 @@ class RegisterRequestModel {
   final String pincode;
   final String startTime;
   final String endTime;
-  final String licenseNo;
-  final String aadhar;
-  final String panNo;
-  final String? gstin;
-  final String accountHolder;
-  final String bankName;
-  final String accountNumber;
-  final String ifscCode;
-  final String branchName;
-  final String? upiId;
-  final String termsConditions;
-  final String privacyPolicy;
   final String city;
   final String? restaurantType;
-
-  // File paths for upload
+  final String? foodPreparationTiming;
   final String? imagePath;
-  final String? fssaiFilePath;
-  final String? aadharFilePath;
-  final String? panFilePath;
-  final String? gstFilePath;
 
   RegisterRequestModel({
     required this.name,
@@ -43,25 +26,10 @@ class RegisterRequestModel {
     required this.pincode,
     required this.startTime,
     required this.endTime,
-    required this.licenseNo,
-    required this.aadhar,
-    required this.panNo,
-    this.gstin,
-    required this.accountHolder,
-    required this.bankName,
-    required this.accountNumber,
-    required this.ifscCode,
-    required this.branchName,
-    this.upiId,
-    this.termsConditions = 'I agree to the terms',
-    this.privacyPolicy = 'I agree to the privacy policy',
     this.city = '',
     this.restaurantType,
+    this.foodPreparationTiming,
     this.imagePath,
-    this.fssaiFilePath,
-    this.aadharFilePath,
-    this.panFilePath,
-    this.gstFilePath,
   });
 
   static String _formatTime(String time) {
@@ -90,28 +58,17 @@ class RegisterRequestModel {
       'pincode': pincode,
       'start_time': _formatTime(startTime),
       'end_time': _formatTime(endTime),
-      'license_no': licenseNo,
-      'aadhar': aadhar,
-      'pan_no': panNo,
-      'account_holder': accountHolder,
-      'bank_name': bankName,
-      'account_number': accountNumber,
-      'ifsc_code': ifscCode,
-      'branch_name': branchName,
-      'terms_conditions': termsConditions,
-      'privacy_policy': privacyPolicy,
       'city': city,
     };
 
-    if (gstin != null && gstin!.trim().isNotEmpty) {
-      map['gstin'] = gstin!.trim();
-    }
-    if (upiId != null && upiId!.trim().isNotEmpty) {
-      map['upi_id'] = upiId!.trim();
-    }
     if (restaurantType != null && restaurantType!.trim().isNotEmpty) {
       map['restaurant_type'] = restaurantType!.trim();
-      map['food_type'] = restaurantType!.trim();
+    }
+    if (foodPreparationTiming != null && foodPreparationTiming!.trim().isNotEmpty) {
+      final clean = foodPreparationTiming!.trim();
+      final numMatch = RegExp(r'(\d+)').firstMatch(clean);
+      final minutesVal = numMatch != null ? numMatch.group(1)! : clean;
+      map['food_preparation_time'] = minutesVal;
     }
 
     return map;
@@ -122,7 +79,9 @@ class RegisterRequestModel {
     final formDataMap = <String, dynamic>{};
 
     fields.forEach((key, value) {
-      formDataMap[key] = value.toString();
+      if (value != null && value.toString().trim().isNotEmpty) {
+        formDataMap[key] = value.toString().trim();
+      }
     });
 
     if (imagePath != null && imagePath!.isNotEmpty && File(imagePath!).existsSync()) {
@@ -131,6 +90,85 @@ class RegisterRequestModel {
         filename: imagePath!.split(Platform.pathSeparator).last,
       );
     }
+
+    return FormData.fromMap(formDataMap);
+  }
+}
+
+class CompleteRegistrationRequestModel {
+  final String restaurantId;
+  final String licenseNo;
+  final String aadhar;
+  final String panNo;
+  final String? gstin;
+  final String accountHolder;
+  final String bankName;
+  final String accountNumber;
+  final String ifscCode;
+  final String branchName;
+  final String? upiId;
+  final String termsConditions;
+  final String privacyPolicy;
+
+  final String? fssaiFilePath;
+  final String? aadharFilePath;
+  final String? panFilePath;
+  final String? gstFilePath;
+
+  CompleteRegistrationRequestModel({
+    required this.restaurantId,
+    required this.licenseNo,
+    required this.aadhar,
+    required this.panNo,
+    this.gstin,
+    required this.accountHolder,
+    required this.bankName,
+    required this.accountNumber,
+    required this.ifscCode,
+    required this.branchName,
+    this.upiId,
+    this.termsConditions = 'I agree to the terms',
+    this.privacyPolicy = 'I agree to the privacy policy',
+    this.fssaiFilePath,
+    this.aadharFilePath,
+    this.panFilePath,
+    this.gstFilePath,
+  });
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{
+      'restaurant_id': restaurantId,
+      'license_no': licenseNo,
+      'aadhar': aadhar,
+      'pan_no': panNo,
+      'account_holder': accountHolder,
+      'bank_name': bankName,
+      'account_number': accountNumber,
+      'ifsc_code': ifscCode,
+      'branch_name': branchName,
+      'terms_conditions': termsConditions,
+      'privacy_policy': privacyPolicy,
+    };
+
+    if (gstin != null && gstin!.trim().isNotEmpty) {
+      map['gstin'] = gstin!.trim();
+    }
+    if (upiId != null && upiId!.trim().isNotEmpty) {
+      map['upi_id'] = upiId!.trim();
+    }
+
+    return map;
+  }
+
+  Future<FormData> toFormData() async {
+    final fields = toJson();
+    final formDataMap = <String, dynamic>{};
+
+    fields.forEach((key, value) {
+      if (value != null && value.toString().trim().isNotEmpty) {
+        formDataMap[key] = value.toString().trim();
+      }
+    });
 
     if (fssaiFilePath != null && fssaiFilePath!.isNotEmpty && File(fssaiFilePath!).existsSync()) {
       formDataMap['fssai_file'] = await MultipartFile.fromFile(

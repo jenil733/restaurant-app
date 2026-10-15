@@ -77,6 +77,14 @@ class _FakeRegisterRepository implements RegisterRepository {
       message: 'Your restaurant details were submitted successfully.',
     );
   }
+
+  @override
+  Future<RegisterResponseModel> completeRegistration(CompleteRegistrationRequestModel request) async {
+    return RegisterResponseModel(
+      success: true,
+      message: 'Your restaurant details were submitted successfully.',
+    );
+  }
 }
 
 class _FakeProductRepository implements ProductRepository {

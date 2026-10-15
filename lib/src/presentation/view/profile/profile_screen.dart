@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../controller/profile_controller.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/restaurant_info_card.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
-import 'package:restaurant_app/src/presentation/view/profile/add_profile_screen.dart'
-    as add_profile;
+
 import 'package:restaurant_app/src/presentation/widgets/app_embedded_image.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -52,11 +52,7 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(height: 15),
                     profileCard(controller),
                     const SizedBox(height: 22),
-                    GestureDetector(
-                      onTap: () =>
-                          Get.to(() => const add_profile.ProfileScreen()),
-                      child: restaurantCard(controller),
-                    ),
+                    restaurantCard(controller),
                     const SizedBox(height: 18),
                     _businessCard(),
                     const SizedBox(height: 30),
@@ -71,17 +67,27 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _topBar() {
-    return const Row(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(width: 18),
         Text(
           "Profile",
-          style: TextStyle(
+          style: GoogleFonts.poppins(
             color: Colors.white,
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
         ),
+        // IconButton(
+        //   onPressed: () =>
+        //       Get.to(() => const add_profile.ProfileScreen()),
+        //   icon: const Icon(
+        //     Icons.edit_outlined,
+        //     color: Colors.white,
+        //     size: 22,
+        //   ),
+        //   tooltip: "Edit Profile",
+        // ),
       ],
     );
   }
@@ -92,23 +98,24 @@ class ProfileScreen extends StatelessWidget {
         title: "Business Information",
         icon: SvgPicture.asset(businessInfo, width: 22, height: 22),
         children: [
-          if (controller.licenseNo.value.isNotEmpty)
-            infoRow(
-              Icons.verified_outlined,
-              "License No",
-              controller.licenseNo.value,
-              iconColor: Colors.teal,
-              bgColor: Colors.teal.withOpacity(0.1),
-            ),
-          if (controller.gstin.value.isNotEmpty)
-            infoRow(
-              Icons.receipt_long_outlined,
-              "GSTIN",
-              controller.gstin.value,
-              iconColor: Colors.indigo,
-              bgColor: Colors.indigo.withOpacity(0.1),
-            ),
-          if (controller.restaurantId.value.isNotEmpty && controller.restaurantId.value != 'null')
+          // if (controller.licenseNo.value.isNotEmpty)
+          //   infoRow(
+          //     Icons.verified_outlined,
+          //     "License No",
+          //     controller.licenseNo.value,
+          //     iconColor: Colors.teal,
+          //     bgColor: Colors.teal.withOpacity(0.1),
+          //   ),
+          // if (controller.gstin.value.isNotEmpty)
+          //   infoRow(
+          //     Icons.receipt_long_outlined,
+          //     "GSTIN",
+          //     controller.gstin.value,
+          //     iconColor: Colors.indigo,
+          //     bgColor: Colors.indigo.withOpacity(0.1),
+          //   ),
+          if (controller.restaurantId.value.isNotEmpty &&
+              controller.restaurantId.value != 'null')
             infoRow(
               SvgPicture.asset(restaurantId, width: 35, height: 35),
               "Restaurant ID",

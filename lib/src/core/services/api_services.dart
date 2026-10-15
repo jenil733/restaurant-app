@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' as g;
@@ -63,9 +64,11 @@ class ApiService {
   }
 
   void _logToConsole(String message) {
-    // print() writes directly to standard output / debug console without debugPrint throttling
+    // print() writes directly to standard output / debug console
     // ignore: avoid_print
     print(message);
+    debugPrint(message);
+    dev.log(message, name: 'ApiService');
   }
 
   String _formatPayload(dynamic data) {

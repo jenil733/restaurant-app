@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:restaurant_app/src/core/const/api_routes.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/utils/helper/image_helper.dart';
 import 'package:restaurant_app/src/data/models/category_model.dart';

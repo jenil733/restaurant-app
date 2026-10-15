@@ -39,7 +39,7 @@ class OverviewCards extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 14),
         Expanded(
           child: Obx(
             () => _OverviewCard(
@@ -85,80 +85,85 @@ class _OverviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 104,
+      height: 100,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: const [
             BoxShadow(
               color: Color(0x13000000),
-              blurRadius: 9,
+              blurRadius: 10,
               offset: Offset(0, 3),
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextHelper.heading2.copyWith(
-                        color: AppColors.textprimary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      value,
-                      style: TextHelper.heading2.copyWith(
-                        color: AppColors.textprimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          child: InkWell(
+            onTap: onViewTap,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
                 children: [
-                  Container(
-                    width: 34,
-                    height: 34,
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: iconBackground,
-                      borderRadius: BorderRadius.circular(7),
-                    ),
-                    child: SvgPicture.asset(
-                      icon,
-                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextHelper.heading2.copyWith(
+                            color: AppColors.textprimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          value,
+                          style: TextHelper.heading2.copyWith(
+                            color: AppColors.textprimary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  GestureDetector(
-  onTap: onViewTap,
-  child: Text(
-    'View',
-    style: TextHelper.button.copyWith(
-      color: AppColors.button2,
-      fontSize: 15,
-      fontWeight: FontWeight.w700,
-      decoration: TextDecoration.underline,
-    ),
-  ),
-),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 34,
+                        height: 34,
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: iconBackground,
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                        child: SvgPicture.asset(
+                          icon,
+                          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'View',
+                        style: TextHelper.button.copyWith(
+                          color: AppColors.button2,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

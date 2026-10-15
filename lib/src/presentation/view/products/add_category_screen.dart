@@ -57,12 +57,12 @@ class AddCategoryScreen extends StatelessWidget {
                     controller: controller.addNameController,
                   ),
                   const SizedBox(height: 20),
-                  ProductTextField(
-                    title: "Description (Optional)",
-                    hint: "Enter a short description about this category",
-                    maxLines: 4,
-                    controller: controller.addDescController,
-                  ),
+                  // ProductTextField(
+                  //   title: "Description (Optional)",
+                  //   hint: "Enter a short description about this category",
+                  //   maxLines: 4,
+                  //   controller: controller.addDescController,
+                  // ),
                   const SizedBox(height: 40),
                   CustomButton(
                     text: "Add Category",

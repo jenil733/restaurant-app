@@ -305,10 +305,7 @@ class _RegisterStep extends StatelessWidget {
                           child: Image.file(File(imagePath), fit: BoxFit.cover),
                         );
                       }
-                      return const AppProfileImage(
-                        size: 110,
-                        
-                      );
+                      return const AppProfileImage(size: 110);
                     }),
                     Positioned(
                       right: 0,
@@ -427,7 +424,7 @@ class _RegisterStep extends StatelessWidget {
               child: AppFormField(
                 label: 'Start Time',
                 controller: controller.startTimeController,
-                hintText: '--/--',
+                hintText: '--/--/--',
                 readOnly: true,
                 onTap: () => _pickTime(context, controller.startTimeController),
                 suffixIcon: IconButton(
@@ -446,7 +443,7 @@ class _RegisterStep extends StatelessWidget {
               child: AppFormField(
                 label: 'End Time',
                 controller: controller.endTimeController,
-                hintText: '--/--',
+                hintText: '--/--/--',
                 readOnly: true,
                 onTap: () => _pickTime(context, controller.endTimeController),
                 suffixIcon: IconButton(
@@ -462,6 +459,8 @@ class _RegisterStep extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 12),
+        _FoodPreparationTimingField(controller: controller),
       ],
     );
   }
@@ -474,9 +473,103 @@ class _RegisterStep extends StatelessWidget {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    if (picked != null) {
+    if (picked != null && context.mounted) {
       textController.text = picked.format(context);
     }
+  }
+}
+
+class _FoodPreparationTimingField extends StatelessWidget {
+  const _FoodPreparationTimingField({required this.controller});
+
+  final SignInController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final currentVal = controller.foodPreparationTimingController.text.trim();
+    final isKnown = SignInController.availablePreparationTimings.contains(
+      currentVal,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text.rich(
+          TextSpan(
+            text: 'Food Preparation Timing',
+            style: TextHelper.heading2.copyWith(fontSize: 15),
+          ),
+        ),
+        const SizedBox(height: 6),
+        DropdownButtonFormField<String>(
+          initialValue: isKnown ? currentVal : null,
+          isExpanded: true,
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: AppColors.textprimary.withValues(alpha: 0.5),
+            size: 20,
+          ),
+          style: TextHelper.heading2.copyWith(
+            fontSize: 12,
+            color: AppColors.textprimary,
+          ),
+          dropdownColor: AppColors.white,
+          borderRadius: BorderRadius.circular(10),
+          decoration: InputDecoration(
+            hintText: 'Select preparation timing',
+            hintStyle: TextHelper.heading2.copyWith(
+              color: AppColors.textprimary.withValues(alpha: 0.3),
+              fontSize: 12,
+            ),
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
+            prefixIcon: Icon(
+              Icons.access_time_rounded,
+              size: 18,
+              color: AppColors.textprimary.withValues(alpha: 0.4),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(7),
+              borderSide: BorderSide(
+                color: AppColors.primary.withValues(alpha: 0.2),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(7),
+              borderSide: const BorderSide(color: AppColors.primary),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(7),
+              borderSide: const BorderSide(color: AppColors.red),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(7),
+              borderSide: const BorderSide(color: AppColors.red),
+            ),
+          ),
+          items: SignInController.availablePreparationTimings.map((timing) {
+            return DropdownMenuItem<String>(
+              value: timing,
+              child: Text(
+                timing,
+                style: TextHelper.heading2.copyWith(
+                  fontSize: 12,
+                  color: AppColors.textprimary,
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: (val) {
+            if (val != null) {
+              controller.foodPreparationTimingController.text = val;
+            }
+          },
+        ),
+      ],
+    );
   }
 }
 

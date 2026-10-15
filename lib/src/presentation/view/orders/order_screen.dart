@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/presentation/controller/home_controller.dart';
 import 'package:restaurant_app/src/presentation/controller/order_controller.dart';
@@ -109,7 +110,7 @@ class OrdersScreen extends StatelessWidget {
                       child: Text(
                         "${controller.tabs[index]} (${controller.tabCounts[index]})",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: controller.selectedTab.value == index
@@ -136,7 +137,7 @@ class OrdersScreen extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Show", style: TextStyle(color: Colors.grey)),
+            Text("Show", style: GoogleFonts.poppins(color: Colors.grey)),
             const SizedBox(width: 8),
             Obx(
               () => SizedBox(
@@ -154,7 +155,7 @@ class OrdersScreen extends StatelessWidget {
                       isDense: true,
                       value: controller.entriesPerPage.value,
                       items: const [10, 25, 50, 100]
-                          .map((e) => DropdownMenuItem(value: e, child: Text("$e")))
+                          .map((e) => DropdownMenuItem(value: e, child: Text("$e", style: GoogleFonts.poppins())))
                           .toList(),
                       onChanged: (v) {
                         if (v != null) controller.changeEntriesPerPage(v);
@@ -175,9 +176,10 @@ class OrdersScreen extends StatelessWidget {
               height: 38,
               child: TextField(
                 onChanged: controller.onSearchChanged,
+                style: GoogleFonts.poppins(fontSize: 13),
                 decoration: InputDecoration(
                   hintText: "Search",
-                  hintStyle: const TextStyle(fontSize: 13),
+                  hintStyle: GoogleFonts.poppins(fontSize: 13),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6),
@@ -263,7 +265,7 @@ class OrdersScreen extends StatelessWidget {
                   children: [
                     Text(
                       controller.errorMessage.value!,
-                      style: const TextStyle(color: Colors.red),
+                      style: GoogleFonts.poppins(color: Colors.red),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 10),
@@ -272,7 +274,7 @@ class OrdersScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: OrderTheme.orange,
                       ),
-                      child: const Text("Retry", style: TextStyle(color: Colors.white)),
+                      child: Text("Retry", style: GoogleFonts.poppins(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -283,12 +285,12 @@ class OrdersScreen extends StatelessWidget {
           final list = controller.filteredOrders;
 
           if (list.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 40),
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 40),
               child: Center(
                 child: Text(
                   "No orders found",
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                  style: GoogleFonts.poppins(color: Colors.grey, fontSize: 14),
                 ),
               ),
             );
@@ -311,22 +313,22 @@ class OrdersScreen extends StatelessWidget {
                 child: Row(
                   children: isNew
                       ? [
-                          Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                          Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                          Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A), height: 1.2)))),
-                          Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A), height: 1.2)))),
+                          Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A))))),
                           Expanded(
                             flex: 2,
                             child: Center(
                               child: GestureDetector(
                                 onTap: () => controller.onView(index),
-                                child: const Text(
+                                child: Text(
                                   "View",
-                                  style: TextStyle(
-                                    color: Color(0xFF22C55E),
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF22C55E),
                                     fontWeight: FontWeight.w600,
                                     decoration: TextDecoration.underline,
-                                    decorationColor: Color(0xFF22C55E),
+                                    decorationColor: const Color(0xFF22C55E),
                                   ),
                                 ),
                               ),
@@ -343,30 +345,30 @@ class OrdersScreen extends StatelessWidget {
                                 ),
                                 child: Text(
                                   order["status"] ?? "",
-                                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
                                 ),
                               ),
                             ),
                           ),
                         ]
                       : [
-                          Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                          Expanded(flex: 2, child: Center(child: Text(order["date"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                          Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
-                          Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A), height: 1.2)))),
-                          Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: const TextStyle(fontSize: 13, color: Color(0xFF4A4A4A))))),
+                          Expanded(flex: 1, child: Center(child: Text("${order["sno"]}", style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["date"] ?? "", style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["orderId"] ?? "", style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A))))),
+                          Expanded(flex: 2, child: Center(child: Text(order["product"]?.replaceAll(' ', '\n') ?? "", textAlign: TextAlign.center, style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A), height: 1.2)))),
+                          Expanded(flex: 1, child: Center(child: Text("${order["qty"]}", style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF4A4A4A))))),
                           Expanded(
                             flex: 2,
                             child: Center(
                               child: GestureDetector(
                                 onTap: () => controller.onView(index),
-                                child: const Text(
+                                child: Text(
                                   "View",
-                                  style: TextStyle(
-                                    color: Color(0xFF22C55E),
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF22C55E),
                                     fontWeight: FontWeight.w600,
                                     decoration: TextDecoration.underline,
-                                    decorationColor: Color(0xFF22C55E),
+                                    decorationColor: const Color(0xFF22C55E),
                                   ),
                                 ),
                               ),
@@ -406,7 +408,7 @@ class OrdersScreen extends StatelessWidget {
             "Showing ${controller.showingFrom} to "
             "${controller.showingTo} of "
             "${controller.totalEntries} entries",
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            style: GoogleFonts.poppins(color: Colors.grey, fontSize: 12),
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -430,7 +432,7 @@ class OrdersScreen extends StatelessWidget {
                 ),
                 child: Text(
                   "${controller.currentPage.value}",
-                  style: const TextStyle(color: Colors.white),
+                  style: GoogleFonts.poppins(color: Colors.white),
                 ),
               ),
               _PageIconButton(
@@ -463,10 +465,10 @@ class _HeaderCell extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
+        style: GoogleFonts.poppins(
           fontWeight: FontWeight.w500,
           fontSize: 12,
-          color: Color(0xFF4A4A4A),
+          color: const Color(0xFF4A4A4A),
         ),
       ),
     );

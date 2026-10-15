@@ -118,6 +118,72 @@ void main() {
       expect(response.data?.items.first.name, 'Chicken Biriyani');
     });
 
+    test('OrderDetailResponseModel parses nested order_info with cash_on_delivery and order_accepted correctly', () {
+      final json = {
+        "success": true,
+        "data": {
+          "order_info": {
+            "id": 11,
+            "order_id": "OID011",
+            "status": "order_accepted",
+            "payment_type": "cash_on_delivery",
+            "created_at": "03 Oct 2026, 03:21 PM"
+          },
+          "customer_info": {
+            "name": "Aiswarya",
+            "phone": "9383457400",
+            "email": null,
+            "address": "tddyfyftstf",
+            "landmark": "xam fir w",
+            "pincode": "629158"
+          },
+          "items": [
+            {
+              "product_id": 1,
+              "name": "Chicken briyani",
+              "food_type": 1,
+              "image": "products/vyLQnJT087CDcPWMTTrGrj4CWRGkoh4Qp8FIHItP.jpg",
+              "mrp": 200,
+              "sell_price": 180,
+              "quantity": 1,
+              "total_price": 180
+            }
+          ],
+          "totals": {
+            "sub_total": "200.00",
+            "offer": "0.00",
+            "discount": "20.00",
+            "grand_total": "180.00"
+          }
+        },
+        "message": "Request successful",
+        "code": 200
+      };
+
+      final response = OrderDetailResponseModel.fromJson(json);
+
+      expect(response.success, isTrue);
+      final order = response.data;
+      expect(order, isNotNull);
+      expect(order!.orderId, 'OID011');
+      expect(order.status, 'order_accepted');
+      expect(order.paymentMethod, 'cash_on_delivery');
+      expect(order.paymentStatus, 'Unpaid');
+      expect(order.date, '03 Oct 2026');
+      expect(order.time, '03:21 PM');
+      expect(order.customer?.name, 'Aiswarya');
+      expect(order.customer?.phone, '9383457400');
+      expect(order.customer?.address.contains('tddyfyftstf'), isTrue);
+      expect(order.customer?.address.contains('xam fir w'), isTrue);
+      expect(order.customer?.address.contains('629158'), isTrue);
+      expect(order.items.length, 1);
+      expect(order.items.first.name, 'Chicken briyani');
+      expect(order.items.first.price, 180);
+      expect(order.amount, 180.00);
+      expect(order.subtotal, 200.00);
+      expect(order.discount, 20.00);
+    });
+
     test('GetOrderDetailsUseCase delegates request to OrderDetailRepository', () async {
       final mockRepo = MockOrderDetailRepository();
       final useCase = GetOrderDetailsUseCase(mockRepo);

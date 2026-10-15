@@ -18,12 +18,12 @@ class HomeHeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: statusBarHeight + 220,
+      height: statusBarHeight + 285,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           const Positioned.fill(
-            bottom: 70,
+            bottom: 90,
             child: AppEmbeddedImage(
               asset: header,
               fit: BoxFit.cover,
@@ -31,13 +31,13 @@ class HomeHeaderSection extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: statusBarHeight + 46,
+            top: statusBarHeight + 36,
             left: 20,
             right: 20,
             child: const _HeaderControls(),
           ),
           Positioned(
-            top: statusBarHeight + 98,
+            top: statusBarHeight + 92,
             left: 20,
             right: 20,
             child: const PromotionCarousel(),
@@ -220,8 +220,8 @@ class _HeaderIcon extends StatelessWidget {
                 Center(
                   child: SvgPicture.asset(
                     asset,
-                    width: 23,
-                    height: 23,
+                    width: 18,
+                    height: 18,
                     colorFilter: const ColorFilter.mode(
                       AppColors.textprimary,
                       BlendMode.srcIn,

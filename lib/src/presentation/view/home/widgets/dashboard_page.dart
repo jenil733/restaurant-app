@@ -30,7 +30,7 @@ class DashboardPage extends StatelessWidget {
             child: Obx(() {
               if (controller.isLoadingDashboard.value && !controller.hasLoadedDashboard.value) {
                 return const Padding(
-                  padding: EdgeInsets.fromLTRB(20, 80, 20, 40),
+                  padding: EdgeInsets.fromLTRB(20, 40, 20, 40),
                   child: Center(
                     child: CircularProgressIndicator(
                       color: AppColors.primary,
@@ -42,7 +42,7 @@ class DashboardPage extends StatelessWidget {
 
               if (!controller.isApproved.value) {
                 return Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 68, 20, 16),
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                   child: Column(
                     children: [
                       if (controller.isRejected.value)
@@ -56,7 +56,7 @@ class DashboardPage extends StatelessWidget {
                 );
               } else {
                 return const Padding(
-                  padding: EdgeInsets.fromLTRB(20, 48, 20, 16),
+                  padding: EdgeInsets.fromLTRB(20, 16, 20, 18),
                   child: OverviewCards(),
                 );
               }
@@ -66,7 +66,7 @@ class DashboardPage extends StatelessWidget {
             child: Obx(() {
               if (!controller.isApproved.value) return const SizedBox.shrink();
               return Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                padding: const EdgeInsets.fromLTRB(20, 6, 20, 10),
                 child: Text(
                   'Recent Orders',
                   style: TextHelper.heading2.copyWith(
@@ -82,7 +82,7 @@ class DashboardPage extends StatelessWidget {
             child: Obx(() {
               if (!controller.isApproved.value) return const SizedBox.shrink();
               return const Padding(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 24),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 28),
                 child: RecentOrdersTable(),
               );
             }),

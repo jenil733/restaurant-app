@@ -36,7 +36,7 @@ class TextHelper {
   }
 
   static TextStyle get button {
-    return GoogleFonts.inter(
+    return GoogleFonts.poppins(
       fontSize: 16,
       fontWeight: FontWeight.w500,
       color: AppColors.textprimary,
@@ -44,7 +44,7 @@ class TextHelper {
   }
   
   static TextStyle get locationheading {
-    return GoogleFonts.inter(
+    return GoogleFonts.poppins(
       fontSize: 20,
       fontWeight: FontWeight.w500,
       color: AppColors.locationtext,
@@ -52,7 +52,7 @@ class TextHelper {
   }
   
   static TextStyle get protext {
-    return GoogleFonts.inter(
+    return GoogleFonts.poppins(
       fontSize: 18,
       fontWeight: FontWeight.w700,
       color: AppColors.textprimary,
@@ -60,7 +60,7 @@ class TextHelper {
   }
 
   static TextStyle get prosubtext {
-    return GoogleFonts.inter(
+    return GoogleFonts.poppins(
       fontSize: 14,
       fontWeight: FontWeight.w400,
       color: AppColors.textprimary,
@@ -68,7 +68,7 @@ class TextHelper {
   }
 
   static TextStyle get provalue {
-    return GoogleFonts.inter(
+    return GoogleFonts.poppins(
       fontSize: 20,
       fontWeight: FontWeight.w600,
       color: AppColors.textprimary,
@@ -76,7 +76,7 @@ class TextHelper {
   }
 
   static TextStyle get provalue1 {
-    return GoogleFonts.inter(
+    return GoogleFonts.poppins(
       fontSize: 15,
       fontWeight: FontWeight.w600,
       color: AppColors.textprimary,
@@ -84,7 +84,7 @@ class TextHelper {
   }
 
   static TextStyle get discount {
-    return GoogleFonts.inter(
+    return GoogleFonts.poppins(
       fontSize: 10,
       fontWeight: FontWeight.w700,
       color: AppColors.green,

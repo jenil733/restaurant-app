@@ -52,6 +52,7 @@ void main() {
         ifscCode: 'SBIN0001234',
         branchName: 'Main Branch',
         upiId: 'ajay@upi',
+        foodPreparationTiming: '30 mins',
         termsConditions: 'I agree to the terms',
         privacyPolicy: 'I agree to the privacy policy',
       );
@@ -61,7 +62,8 @@ void main() {
       expect(formData.fields.any((f) => f.key == 'name' && f.value == 'Ajay Restaurant'), isTrue);
       expect(formData.fields.any((f) => f.key == 'owner_name' && f.value == 'Ajay'), isTrue);
       expect(formData.fields.any((f) => f.key == 'phone' && f.value == '8667695592'), isTrue);
-      expect(formData.fields.any((f) => f.key == 'email' && f.value == 'ajay2@gmail.com'), isTrue);
+      expect(formData.fields.any((f) => f.key == 'food_preparation_time' && f.value == '30'), isTrue);
+      expect(formData.fields.any((f) => f.key == 'food_preparation_timing' && f.value == '30'), isTrue);
       expect(formData.fields.any((f) => f.key == 'license_no' && f.value == 'LIC12345'), isTrue);
       expect(formData.fields.any((f) => f.key == 'aadhar' && f.value == '123456123456'), isTrue);
       expect(formData.fields.any((f) => f.key == 'pan_no' && f.value == 'ABCDE1234F'), isTrue);
@@ -211,8 +213,8 @@ void main() {
       expect(controller.panValidator('ABCDE1234F'), isNull);
 
       // GSTIN validator
-      expect(controller.gstinValidator(''), isNull);
-      expect(controller.gstinValidator(null), isNull);
+      expect(controller.gstinValidator(''), 'GSTIN number is required');
+      expect(controller.gstinValidator(null), 'GSTIN number is required');
       expect(controller.gstinValidator('INVALID'), 'Enter a valid 15-character GSTIN (e.g. 22AAAAA0000A1Z5)');
       expect(controller.gstinValidator('22AAAAA0000A1Z5'), isNull);
 

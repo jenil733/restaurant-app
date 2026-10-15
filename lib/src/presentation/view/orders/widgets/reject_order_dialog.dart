@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 
 class RejectOrderDialog {
@@ -19,9 +20,9 @@ class RejectOrderDialog {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 "Are you sure ?",
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
@@ -36,11 +37,11 @@ class RejectOrderDialog {
 
               const SizedBox(height: 12),
 
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Description",
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w500,
                     fontSize: 15,
                   ),
@@ -52,8 +53,10 @@ class RejectOrderDialog {
               TextField(
                 controller: reasonController,
                 maxLines: 3,
+                style: GoogleFonts.poppins(fontSize: 14),
                 decoration: InputDecoration(
                   hintText: "Enter",
+                  hintStyle: GoogleFonts.poppins(fontSize: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -82,9 +85,9 @@ class RejectOrderDialog {
                               BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Cancel",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           color: Colors.grey,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -122,9 +125,9 @@ class RejectOrderDialog {
                               BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Submit",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 16,
                         ),

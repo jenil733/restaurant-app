@@ -25,7 +25,13 @@ class OrderItemDetailModel {
     }
 
     num parsedPrice = 0;
-    final rawPrice = json['price'] ?? json['amount'] ?? json['rate'] ?? json['unit_price'];
+    final rawPrice = json['sell_price'] ??
+        json['total_price'] ??
+        json['price'] ??
+        json['amount'] ??
+        json['rate'] ??
+        json['unit_price'] ??
+        json['mrp'];
     if (rawPrice is num) {
       parsedPrice = rawPrice;
     } else if (rawPrice is String) {
@@ -72,6 +78,19 @@ class CustomerInfoModel {
   });
 
   factory CustomerInfoModel.fromJson(Map<String, dynamic> json) {
+    String addr = json['address']?.toString() ??
+        json['delivery_address']?.toString() ??
+        json['location']?.toString() ??
+        '';
+    final landmark = json['landmark']?.toString()?.trim();
+    if (landmark != null && landmark.isNotEmpty && !addr.contains(landmark)) {
+      addr += (addr.isNotEmpty ? ', ' : '') + landmark;
+    }
+    final pincode = json['pincode']?.toString()?.trim();
+    if (pincode != null && pincode.isNotEmpty && !addr.contains(pincode)) {
+      addr += (addr.isNotEmpty ? ' - ' : '') + pincode;
+    }
+
     return CustomerInfoModel(
       name: json['name']?.toString() ??
           json['customer_name']?.toString() ??
@@ -81,10 +100,7 @@ class CustomerInfoModel {
           json['phone_number']?.toString() ??
           json['mobile']?.toString() ??
           '',
-      address: json['address']?.toString() ??
-          json['delivery_address']?.toString() ??
-          json['location']?.toString() ??
-          '',
+      address: addr,
       email: json['email']?.toString(),
     );
   }
@@ -156,6 +172,18 @@ class OrderModel {
       return fallback;
     }
 
+    final orderInfo = json['order_info'] is Map
+        ? Map<String, dynamic>.from(json['order_info'])
+        : <String, dynamic>{};
+    final custInfo = json['customer_info'] is Map
+        ? Map<String, dynamic>.from(json['customer_info'])
+        : (json['customer'] is Map
+            ? Map<String, dynamic>.from(json['customer'])
+            : <String, dynamic>{});
+    final totalsMap = json['totals'] is Map
+        ? Map<String, dynamic>.from(json['totals'])
+        : <String, dynamic>{};
+
     // Parse items list
     List<OrderItemDetailModel> itemsList = [];
     final rawItems = json['items'] ?? json['products'] ?? json['order_items'];
@@ -168,8 +196,8 @@ class OrderModel {
 
     // Customer
     CustomerInfoModel? cust;
-    if (json['customer'] is Map) {
-      cust = CustomerInfoModel.fromJson(Map<String, dynamic>.from(json['customer']));
+    if (custInfo.isNotEmpty) {
+      cust = CustomerInfoModel.fromJson(custInfo);
     } else if (json['customer_name'] != null ||
         json['phone'] != null ||
         json['delivery_address'] != null) {
@@ -193,41 +221,101 @@ class OrderModel {
           : 1,
     );
 
-    final rawAmount = json['total_amount'] ??
+    final rawAmount = totalsMap['grand_total'] ??
+        json['total_amount'] ??
         json['amount'] ??
         json['total'] ??
         json['price'] ??
         json['grand_total'];
 
-    final rawSubtotal = json['subtotal'] ?? json['sub_total'] ?? rawAmount;
+    final rawSubtotal = totalsMap['sub_total'] ??
+        json['subtotal'] ??
+        json['sub_total'] ??
+        rawAmount;
+
+    final rawDiscount = totalsMap['discount'] ??
+        totalsMap['offer'] ??
+        json['discount'] ??
+        json['discount_amount'] ??
+        0;
+
+    final rawDelivery = totalsMap['delivery_charge'] ??
+        json['delivery_charge'] ??
+        json['delivery_fee'] ??
+        0;
+
+    final idVal = orderInfo['id'] ?? json['id'] ?? json['order_id'];
+    final rawOrderIdStr = orderInfo['order_id'] ??
+        json['order_id'] ??
+        json['order_number'] ??
+        (idVal != null ? '#$idVal' : '#1001');
+
+    final rawStatus = orderInfo['status'] ?? json['status'] ?? 'Pending';
+    final rawPaymentMethod = orderInfo['payment_type'] ??
+        orderInfo['payment_method'] ??
+        orderInfo['payment_mode'] ??
+        json['payment_method'] ??
+        json['payment_type'] ??
+        json['payment_mode'] ??
+        'Online';
+
+    String resolvedPaymentStatus = 'Unpaid';
+    final rawPaymentStatus = orderInfo['payment_status'] ?? json['payment_status'];
+    final isPaidVal = orderInfo['is_paid'] ?? json['is_paid'];
+
+    if (rawPaymentStatus != null && rawPaymentStatus.toString().trim().isNotEmpty) {
+      resolvedPaymentStatus = rawPaymentStatus.toString().trim();
+    } else if (isPaidVal != null) {
+      resolvedPaymentStatus = (isPaidVal == 1 || isPaidVal == true || isPaidVal == '1' || isPaidVal.toString().toLowerCase() == 'paid') ? 'Paid' : 'Unpaid';
+    } else {
+      final pm = rawPaymentMethod.toString().toLowerCase().trim();
+      if (pm.contains('cash') || pm.contains('cod')) {
+        resolvedPaymentStatus = 'Unpaid';
+      } else if (pm.contains('online') || pm.contains('card') || pm.contains('upi') || pm.contains('netbanking') || pm.contains('wallet')) {
+        resolvedPaymentStatus = 'Paid';
+      } else {
+        resolvedPaymentStatus = 'Unpaid';
+      }
+    }
+
+    final rawCreatedDate = orderInfo['created_at'] ??
+        json['date'] ??
+        json['created_at'] ??
+        json['order_date'] ??
+        '';
+
+    String parsedDate = rawCreatedDate.toString();
+    String parsedTime = (orderInfo['time'] ?? json['time'] ?? '').toString();
+
+    if (parsedTime.isEmpty && parsedDate.contains(',')) {
+      final parts = parsedDate.split(',');
+      if (parts.length >= 2) {
+        parsedDate = parts[0].trim();
+        parsedTime = parts.sublist(1).join(',').trim();
+      }
+    }
 
     return OrderModel(
-      id: json['id'] ?? json['order_id'],
-      orderId: json['order_id']?.toString() ??
-          json['order_number']?.toString() ??
-          (json['id'] != null ? '#${json['id']}' : '#1001'),
+      id: idVal,
+      orderId: rawOrderIdStr.toString(),
       productName: mainProduct,
       quantity: totalQty,
-      status: json['status']?.toString() ?? 'Pending',
+      status: rawStatus.toString(),
       amount: parseNum(rawAmount),
       subtotal: parseNum(rawSubtotal),
-      deliveryCharge: parseNum(json['delivery_charge'] ?? json['delivery_fee']),
-      discount: parseNum(json['discount'] ?? json['discount_amount']),
-      paymentStatus: json['payment_status']?.toString() ??
-          (json['is_paid'] == 1 || json['is_paid'] == true ? 'Paid' : 'Unpaid'),
-      paymentMethod: json['payment_method']?.toString() ??
-          json['payment_type']?.toString() ??
-          'Online',
-      date: json['date']?.toString() ??
-          json['created_at']?.toString() ??
-          json['order_date']?.toString() ??
-          '',
-      time: json['time']?.toString() ?? '',
+      deliveryCharge: parseNum(rawDelivery),
+      discount: parseNum(rawDiscount),
+      paymentStatus: resolvedPaymentStatus,
+      paymentMethod: rawPaymentMethod.toString(),
+      date: parsedDate,
+      time: parsedTime,
       customer: cust,
       items: itemsList,
       cancelReason: json['cancel_reason']?.toString() ??
           json['cancellation_reason']?.toString() ??
-          json['reason']?.toString(),
+          json['reason']?.toString() ??
+          orderInfo['cancel_reason']?.toString() ??
+          orderInfo['reason']?.toString(),
     );
   }
 
@@ -247,6 +335,7 @@ class OrderModel {
       'discount': discount,
       'payment_status': paymentStatus,
       'payment_method': paymentMethod,
+      'payment_type': paymentMethod,
       'date': date,
       'time': time,
       if (customer != null) 'customer': customer!.toJson(),

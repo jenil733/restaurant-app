@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:restaurant_app/src/core/const/app_color.dart';
 import 'package:restaurant_app/src/core/const/app_images.dart';
+import 'package:restaurant_app/src/core/utils/helper/image_helper.dart';
 
 class UploadImageWidget extends StatelessWidget {
   final String? imagePath;
@@ -71,12 +72,44 @@ class UploadImageWidget extends StatelessWidget {
     );
   }
 
+  Widget _buildPreview(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.startsWith('assets/')) {
+      return Image.asset(
+        trimmed,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _buildFallback(),
+      );
+    }
+
+    try {
+      final file = File(trimmed);
+      if (file.existsSync()) {
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _buildFallback(),
+        );
+      }
+    } catch (_) {}
+
+    final resolvedUrl = ImageHelper.getImageUrl(trimmed);
+    if (resolvedUrl != null && resolvedUrl.isNotEmpty) {
+      return Image.network(
+        resolvedUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _buildFallback(),
+      );
+    }
+
+    return _buildFallback();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final hasImage = imagePath != null && imagePath!.trim().isNotEmpty;
-    final isLocalFile = hasImage &&
-        !imagePath!.startsWith('http') &&
-        !imagePath!.startsWith('assets/');
+    final hasImage = imagePath != null &&
+        imagePath!.trim().isNotEmpty &&
+        imagePath!.trim().toLowerCase() != 'null';
 
     if (hasImage) {
       return Container(
@@ -91,24 +124,7 @@ class UploadImageWidget extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              if (isLocalFile)
-                Image.file(
-                  File(imagePath!),
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _buildFallback(),
-                )
-              else if (imagePath!.startsWith('http'))
-                Image.network(
-                  imagePath!,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _buildFallback(),
-                )
-              else
-                Image.asset(
-                  imagePath!,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _buildFallback(),
-                ),
+              _buildPreview(imagePath!),
               Positioned(
                 bottom: 0,
                 left: 0,
